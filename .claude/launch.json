@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "patrimoine",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8643", "--bind", "127.0.0.1", "--directory", "/Users/mac/dev/Hotel/Bordeaux patrimoine"],
+      "port": 8643
+    }
+  ]
+}
