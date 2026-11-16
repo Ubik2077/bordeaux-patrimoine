@@ -1,8 +1,8 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
 // ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
-import { deplier, polygonesAutour } from './compact.js?v=24';
-import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=24';
+import { deplier, polygonesAutour } from './compact.js?v=28';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=28';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -11,7 +11,7 @@ const COUL = {
 };
 const VUE = { center: [-0.5705, 44.8435], zoom: 13.2, pitch: 52, bearing: -28 };
 
-const DONNEES = 13; // à changer quand les fichiers de data/ sont régénérés (évite l'ancienne version en cache)
+const DONNEES = 14; // à changer quand les fichiers de data/ sont régénérés (évite l'ancienne version en cache)
 const json = (u) => fetch(`${u}?v=${DONNEES}`).then((r) => r.json());
 // les gros fichiers partent tout de suite, pendant que la carte s'initialise
 const volumes = Promise.all([json('data/sol.json'), json('data/batiments.json'), json('data/arbres.json')])
@@ -276,6 +276,15 @@ function textesFiche(id) {
   $('fiche-nom').textContent = nom(id);
   $('fiche-dates').textContent = champ(id, 'dates');
   $('fiche-texte').textContent = champ(id, 'texte');
+  for (const c of ['regarder', 'savez', 'visite']) {
+    const v = champ(id, c) || '';
+    $('bloc-' + c).hidden = !v;
+    $('fiche-' + c).textContent = v;
+  }
+  if (m.lien) $('fiche-visite').insertAdjacentHTML('beforeend', ` <a href="${m.lien}" target="_blank" rel="noopener">${t('fiche.siteOfficiel')} ↗</a>`);
+  $('fiche-sources').innerHTML = m.sources?.length
+    ? `${t('fiche.sources')}${getLang() === 'fr' ? ' : ' : ': '}` + m.sources.map(([titre, url]) => `<a href="${url}" target="_blank" rel="noopener">${echap(titre)}</a>`).join(' · ')
+    : '';
   lienMarche(id);
   galerie = photosDe(id);
   document.querySelector('.periodes [data-p="autrefois"]').textContent = galerie.find((p) => p.onglet)?.onglet || t('fiche.autrefois');

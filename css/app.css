@@ -276,6 +276,20 @@ body.promenades-ouvertes .titre { display: none; }
 .fiche h2 { margin: 6px 0 2px; font-family: var(--serif); font-size: 32px; line-height: 1.05; font-weight: 600; color: var(--brun); }
 .fiche-dates { margin: 0 0 12px; font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--brun-doux); }
 .fiche-texte { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--brun); }
+.fiche-bloc { margin: 16px 0 0; }
+.fiche-bloc h3, .fiche-savez h3 {
+  margin: 0 0 4px; font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; color: var(--bordeaux);
+}
+.fiche-bloc p, .fiche-savez p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--brun); }
+.fiche-savez {
+  margin: 16px 0 0; padding: 11px 14px 12px; border-radius: 10px;
+  background: rgba(122, 35, 64, .07); border-left: 3px solid var(--bordeaux);
+}
+.fiche-savez p { font-family: var(--serif); font-size: 16.5px; line-height: 1.4; font-style: italic; }
+.fiche-visite p { font-size: 13.5px; color: var(--brun-doux); }
+.fiche-visite a, .fiche-sources a { color: var(--bordeaux); font-weight: 600; }
+.fiche-sources { margin: 12px 0 0; font-size: 11px; line-height: 1.5; color: var(--brun-doux); }
+.fiche-sources a { font-weight: 500; }
 .fiche-liens { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid var(--filet); font-size: 12.5px; color: var(--brun-doux); }
 
 /* ---------- visionneuse plein écran ---------- */
