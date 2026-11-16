@@ -103,7 +103,7 @@ export const getLocale = () => LANGS.find((l) => l.code === lang).locale;
 export async function setLang(l) {
   if (!CODES.includes(l)) l = 'fr';
   if (!charges[l]) {
-    try { charges[l] = (await import(`./lang/${l}.js?v=29`)).default; } catch { l = 'fr'; }
+    try { charges[l] = (await import(`./lang/${l}.js?v=30`)).default; } catch { l = 'fr'; }
   }
   lang = l;
   try { localStorage.setItem(CLE, l); } catch { /* stockage indisponible */ }

@@ -92,6 +92,26 @@ CHOIX = {
         (A, 'Bordeaux - Monument des Girondins.jpg', 'Les chevaux de la fontaine vers 1910, carte postale'),
         (J, 'Le monument aux Girondins (Bordeaux).JPG', 'Le monument aujourd’hui'),
     ],
+    'notredame': [
+        (J, 'Bordeaux - Église Notre-Dame de Bordeaux.jpg', 'La façade baroque aujourd’hui'),
+    ],
+    'garesaintjean': [
+        (A, 'LL 55 - BORDEAUX - La Gare du Midi.JPG', 'La gare et le tramway au début du XXᵉ siècle, carte postale'),
+        (A, 'INCONNU - BORDEAUX - Gare du Midi (Le Hall).jpg', 'Le hall et sa verrière au début du XXᵉ siècle, carte postale'),
+        (J, 'Gare de Bordeaux-Saint-Jean, July 2014 (05).JPG', 'La façade aujourd’hui'),
+    ],
+    'synagogue': [
+        (A, 'Bordeaux - Synagogue 1.jpg', 'L’intérieur au début du XXᵉ siècle, carte postale'),
+        (J, 'Bordeaux Synagogue Extérieure Facade 1.jpg', 'La façade aujourd’hui'),
+    ],
+    'boursetravail': [
+        (J, 'Bourse du travail de Bordeaux.jpg', 'La façade et son bas-relief'),
+        (J, 'Bordeaux Bourse du Travail art déco le péristyle.JPG', 'Le péristyle Art déco'),
+    ],
+    'tribunal': [
+        (J, 'Bordeaux Palais de Justice 24.JPG', 'Le tribunal et les tours du fort du Hâ'),
+        (J, 'Bordeaux Palais de Justice 27.JPG', 'Une salle d’audience en forme de cuve'),
+    ],
     'citeduvin': [
         (J, 'Bordeaux Quai de Bacalan (1).jpg', 'La Cité du Vin au bord de la Garonne'),
     ],

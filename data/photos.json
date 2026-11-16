@@ -389,6 +389,106 @@
    "source": "https://commons.wikimedia.org/wiki/File:Le_monument_aux_Girondins_(Bordeaux).JPG"
   }
  ],
+ "notredame": [
+  {
+   "src": "img/monuments/notredame-1.webp",
+   "mini": "img/monuments/notredame-1-mini.webp",
+   "periode": "aujourdhui",
+   "legende": "La façade baroque aujourd’hui",
+   "auteur": "P. Hughes",
+   "licence": "CC BY 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_%C3%89glise_Notre-Dame_de_Bordeaux.jpg"
+  }
+ ],
+ "garesaintjean": [
+  {
+   "src": "img/monuments/garesaintjean-1.webp",
+   "mini": "img/monuments/garesaintjean-1-mini.webp",
+   "periode": "autrefois",
+   "legende": "La gare et le tramway au début du XXᵉ siècle, carte postale",
+   "auteur": "Scanné par Claude_villetaneuse",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:LL_55_-_BORDEAUX_-_La_Gare_du_Midi.JPG"
+  },
+  {
+   "src": "img/monuments/garesaintjean-2.webp",
+   "mini": "img/monuments/garesaintjean-2-mini.webp",
+   "periode": "autrefois",
+   "legende": "Le hall et sa verrière au début du XXᵉ siècle, carte postale",
+   "auteur": "Auteur inconnu",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:INCONNU_-_BORDEAUX_-_Gare_du_Midi_(Le_Hall).jpg"
+  },
+  {
+   "src": "img/monuments/garesaintjean-3.webp",
+   "mini": "img/monuments/garesaintjean-3-mini.webp",
+   "periode": "aujourdhui",
+   "legende": "La façade aujourd’hui",
+   "auteur": "Ardfern",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Gare_de_Bordeaux-Saint-Jean,_July_2014_(05).JPG"
+  }
+ ],
+ "synagogue": [
+  {
+   "src": "img/monuments/synagogue-1.webp",
+   "mini": "img/monuments/synagogue-1-mini.webp",
+   "periode": "autrefois",
+   "legende": "L’intérieur au début du XXᵉ siècle, carte postale",
+   "auteur": "D.D. circa 1900-1920",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Synagogue_1.jpg"
+  },
+  {
+   "src": "img/monuments/synagogue-2.webp",
+   "mini": "img/monuments/synagogue-2-mini.webp",
+   "periode": "aujourdhui",
+   "legende": "La façade aujourd’hui",
+   "auteur": "Zairon",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Synagogue_Ext%C3%A9rieure_Facade_1.jpg"
+  }
+ ],
+ "boursetravail": [
+  {
+   "src": "img/monuments/boursetravail-1.webp",
+   "mini": "img/monuments/boursetravail-1-mini.webp",
+   "periode": "aujourdhui",
+   "legende": "La façade et son bas-relief",
+   "auteur": "LaPablote",
+   "licence": "CC0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bourse_du_travail_de_Bordeaux.jpg"
+  },
+  {
+   "src": "img/monuments/boursetravail-2.webp",
+   "mini": "img/monuments/boursetravail-2-mini.webp",
+   "periode": "aujourdhui",
+   "legende": "Le péristyle Art déco",
+   "auteur": "Langladure",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Bourse_du_Travail_art_d%C3%A9co_le_p%C3%A9ristyle.JPG"
+  }
+ ],
+ "tribunal": [
+  {
+   "src": "img/monuments/tribunal-1.webp",
+   "mini": "img/monuments/tribunal-1-mini.webp",
+   "periode": "aujourdhui",
+   "legende": "Le tribunal et les tours du fort du Hâ",
+   "auteur": "GFreihalter",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Palais_de_Justice_24.JPG"
+  },
+  {
+   "src": "img/monuments/tribunal-2.webp",
+   "mini": "img/monuments/tribunal-2-mini.webp",
+   "periode": "aujourdhui",
+   "legende": "Une salle d’audience en forme de cuve",
+   "auteur": "GFreihalter",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Palais_de_Justice_27.JPG"
+  }
+ ],
  "citeduvin": [
   {
    "src": "img/monuments/citeduvin-1.webp",

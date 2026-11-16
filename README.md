@@ -5,7 +5,7 @@ le centre est découpé en « île », les bâtiments sont en relief à leur hau
 et les monuments phares sont colorés **par époque** (Antiquité, Moyen Âge, XVIIIᵉ, XIXᵉ, XXᵉ–XXIᵉ).
 Suite de « Bordeaux à la carte » (bars et restaurants).
 
-**Prototype visuel** : 17 monuments avec un aperçu au survol et une fiche illustrée
+**Prototype visuel** : 22 monuments avec un aperçu au survol et une fiche illustrée
 (photos « Autrefois / Aujourd'hui », visionneuse plein écran), les autres bâtiments protégés en beige
 (lien vers leur notice officielle Mérimée), et trois promenades à pied depuis l'hôtel tracées sur les rues.
 En cinq langues (français, anglais, espagnol, italien, allemand ; menu 🌐, langue du téléphone détectée).

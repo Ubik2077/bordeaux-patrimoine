@@ -1,8 +1,8 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
 // ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
-import { deplier, polygonesAutour } from './compact.js?v=29';
-import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=29';
+import { deplier, polygonesAutour } from './compact.js?v=30';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=30';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -11,7 +11,7 @@ const COUL = {
 };
 const VUE = { center: [-0.5705, 44.8435], zoom: 13.2, pitch: 52, bearing: -28 };
 
-const DONNEES = 14; // à changer quand les fichiers de data/ sont régénérés (évite l'ancienne version en cache)
+const DONNEES = 15; // à changer quand les fichiers de data/ sont régénérés (évite l'ancienne version en cache)
 const json = (u) => fetch(`${u}?v=${DONNEES}`).then((r) => r.json());
 // les gros fichiers partent tout de suite, pendant que la carte s'initialise
 const volumes = Promise.all([json('data/sol.json'), json('data/batiments.json'), json('data/arbres.json')])
