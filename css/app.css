@@ -49,6 +49,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .legende .info { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 12.5px; color: var(--brun-doux); }
 .legende-aide { margin: 8px 0 0; font-size: 11.5px; color: var(--brun-doux); }
 
+/* langue : petit bouton en haut à droite du cartouche */
+.langue { position: absolute; top: 12px; right: 12px; z-index: 3; }
+#btn-langue {
+  padding: 4px 8px; border: 1px solid var(--filet); border-radius: 999px; background: rgba(255, 250, 240, .6);
+  font-size: 11.5px; font-weight: 600; color: var(--brun);
+}
+#btn-langue:hover { background: #fbf4e6; }
+.menu-langue {
+  position: absolute; top: calc(100% + 6px); right: 0; min-width: 150px; padding: 5px;
+  background: var(--parchemin); border: 1px solid var(--filet); border-radius: 11px; box-shadow: var(--ombre);
+  display: flex; flex-direction: column; gap: 1px; animation: apparait .14s ease-out;
+}
+.menu-langue button {
+  display: flex; align-items: center; gap: 9px; padding: 7px 10px; border: 0; border-radius: 7px; background: none;
+  font-size: 13.5px; text-align: left; color: var(--brun);
+}
+.menu-langue button:hover { background: rgba(80, 50, 20, .07); }
+.menu-langue button[aria-checked="true"] { background: var(--brun); color: var(--parchemin); }
+.titre .kicker { padding-right: 64px; }
+
 /* bouton d'accès aux promenades, dans le cartouche */
 .btn-promenades {
   display: flex; align-items: center; gap: 9px; width: 100%; margin-top: 12px; padding: 10px 12px;

@@ -1,6 +1,8 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
-import { deplier, polygonesAutour } from './compact.js';
+// ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
+import { deplier, polygonesAutour } from './compact.js?v=18';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=18';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -14,12 +16,18 @@ const json = (u) => fetch(`${u}?v=${DONNEES}`).then((r) => r.json());
 // les gros fichiers partent tout de suite, pendant que la carte s'initialise
 const volumes = Promise.all([json('data/sol.json'), json('data/batiments.json'), json('data/arbres.json')])
   .then(([sol, bati, arbres]) => ({ sol: deplier(sol), bati: deplier(bati), arbres: polygonesAutour(arbres, 3.3, 6) }));
-const [zone, meta, photos, marches] = await Promise.all([
+const [, zone, meta, photos, marches] = await Promise.all([
+  setLang(getLang()).then(() => null),
   json('data/zone.json'), json('data/monuments.json'), json('data/photos.json').catch(() => ({})),
   json('data/promenades.json').catch(() => ({ promenades: [], depuisHotel: {} })),
 ]);
 const { epoques, monuments, hotel } = meta;
 const parId = Object.fromEntries(monuments.map((m) => [m.id, m]));
+applyStatic();
+// textes dans la langue active (le français des données sert de repli)
+const nom = (id) => (id === 'hotel' ? t('hotel') : tMonument(parId[id], 'name'));
+const champ = (id, c) => tMonument(parId[id], c);
+const nomEpoque = (k) => tEpoque(k, epoques[k].label);
 const ZONE_BB = zone.geometry.coordinates[0].reduce((b, [x, y]) => [[Math.min(b[0][0], x), Math.min(b[0][1], y)], [Math.max(b[1][0], x), Math.max(b[1][1], y)]], [[180, 90], [-180, -90]]);
 
 // vue d'ensemble : toute l'île, en laissant la place au cartouche du titre
@@ -114,7 +122,7 @@ map.on('load', async () => {
     if (p.r) {
       new maplibregl.Popup({ closeButton: false, maxWidth: '260px' })
         .setLngLat(ev.lngLat)
-        .setHTML(`<strong>Monument historique</strong><br>Bâtiment protégé au titre des monuments historiques.<br><a href="${notice(p.r)}" target="_blank" rel="noopener">Notice officielle ${p.r} ↗</a>`)
+        .setHTML(`<strong>${t('mh.titre')}</strong><br>${t('mh.texte')}<br><a href="${notice(p.r)}" target="_blank" rel="noopener">${t('mh.notice', { ref: p.r })} ↗</a>`)
         .addTo(map);
     }
   });
@@ -150,7 +158,7 @@ function poserReperes() {
   const chiffres = { antique: 'I', medieval: 'II', lumieres: 'III', xix: 'IV', contemporain: 'V' };
   for (const m of monuments) {
     if (m.hidePin) continue;
-    const el = repere({ id: m.id, at: m.at, color: epoques[m.epoque].color, label: m.name, initiale: chiffres[m.epoque] });
+    const el = repere({ id: m.id, at: m.at, color: epoques[m.epoque].color, label: nom(m.id), initiale: chiffres[m.epoque] });
     const go = (e) => { e.stopPropagation(); ouvrir(m.id); };
     el.addEventListener('click', go);
     el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') go(e); });
@@ -161,7 +169,8 @@ function poserReperes() {
     el.addEventListener('blur', cacherApercu);
     reperes.set(m.id, el);
   }
-  const h = repere({ at: hotel.at, color: '#22252b', label: 'Votre hôtel', initiale: 'H', classe: 'hotel' });
+  const h = repere({ at: hotel.at, color: '#22252b', label: t('hotel'), initiale: 'H', classe: 'hotel' });
+  reperes.set('hotel', h);
   h.addEventListener('click', (e) => { e.stopPropagation(); map.flyTo({ center: [hotel.at[1], hotel.at[0]], zoom: 16.5, pitch: 60, duration: 1600 }); });
 
   const noms = () => document.body.classList.toggle('noms-visibles', map.getZoom() >= 15.4);
@@ -170,13 +179,20 @@ function poserReperes() {
 
 // ---------- légende par époque ----------
 const actives = new Set(Object.keys(epoques));
-function legende() {
+function dessinerLegende() {
   const box = document.getElementById('legende');
   const compte = {};
   for (const m of monuments) if (!m.hidePin) compte[m.epoque] = (compte[m.epoque] || 0) + 1;
-  box.innerHTML = Object.entries(epoques).map(([k, ep]) =>
-    `<button data-k="${k}" aria-pressed="true"><span class="pastille" style="background:${ep.color}"></span>${ep.label}<span class="nb">${compte[k] || 0}</span></button>`).join('') +
-    `<div class="sep"></div><div class="info"><span class="pastille" style="background:${COUL.protege}"></span>Autre bâtiment protégé</div>`;
+  const tout = actives.size === Object.keys(epoques).length;
+  box.innerHTML = Object.entries(epoques).map(([k, ep]) => {
+    const on = tout || actives.has(k);
+    return `<button data-k="${k}" aria-pressed="${on}" class="${on ? '' : 'eteint'}"><span class="pastille" style="background:${ep.color}"></span>${nomEpoque(k)}<span class="nb">${compte[k] || 0}</span></button>`;
+  }).join('') +
+    `<div class="sep"></div><div class="info"><span class="pastille" style="background:${COUL.protege}"></span>${t('legende.protege')}</div>`;
+}
+function legende() {
+  const box = document.getElementById('legende');
+  dessinerLegende();
   box.addEventListener('click', (e) => {
     const b = e.target.closest('button'); if (!b) return;
     const k = b.dataset.k;
@@ -190,7 +206,7 @@ function legende() {
       btn.classList.toggle('eteint', !on); btn.setAttribute('aria-pressed', on);
     }
     if (map.getLayer('bati')) map.setPaintProperty('bati', 'fill-extrusion-color', couleurBati(actives));
-    for (const [id, el] of reperes) el.classList.toggle('estompe', !actives.has(parId[id].epoque));
+    for (const [id, el] of reperes) if (parId[id]) el.classList.toggle('estompe', !actives.has(parId[id].epoque));
   });
 }
 legende();
@@ -198,7 +214,11 @@ legende();
 // ---------- aperçu au survol ----------
 const apercu = document.getElementById('apercu');
 const echap = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
-const photosDe = (id) => photos[id] || [];
+const ONGLETS = { 'Le chantier': 'fiche.chantier' };
+const photosDe = (id) => (photos[id] || []).map((p, i) => ({
+  ...p, legende: tPhoto(id, i, p.legende), onglet: p.onglet && t(ONGLETS[p.onglet] || p.onglet),
+  auteur: p.auteur === 'Auteur inconnu' ? t('photo.inconnu') : p.auteur,
+}));
 const photoActuelle = (id) => { const l = photosDe(id); return l.find((p) => p.periode === 'aujourdhui') || l[0]; };
 let apercuId = null;
 function montrerApercu(id, x, y) {
@@ -208,9 +228,9 @@ function montrerApercu(id, x, y) {
     const ep = epoques[m.epoque], ph = photoActuelle(id);
     apercu.innerHTML =
       (ph ? `<img src="${ph.mini}" alt="">` : '') +
-      `<div class="ap-corps"><p class="ap-epoque" style="color:${ep.color}">${ep.label} · ${echap(m.dates)}</p>` +
-      `<p class="ap-nom">${echap(m.name)}</p><p class="ap-texte">${echap(m.apercu || '')}</p>` +
-      `<p class="ap-plus">Cliquez pour en savoir plus</p></div>`;
+      `<div class="ap-corps"><p class="ap-epoque" style="color:${ep.color}">${nomEpoque(m.epoque)} · ${echap(champ(id, 'dates'))}</p>` +
+      `<p class="ap-nom">${echap(nom(id))}</p><p class="ap-texte">${echap(champ(id, 'apercu') || '')}</p>` +
+      `<p class="ap-plus">${t('apercu.plus')}</p></div>`;
     apercuId = id;
   }
   // garde la bulle dans l'écran (elle s'affiche au-dessus du point visé)
@@ -237,28 +257,32 @@ function afficherPhoto(i) {
   afficherPhotoInfos(i);
 }
 
+// textes de la fiche (rappelé au changement de langue, sans toucher à la photo affichée)
+function textesFiche(id) {
+  const m = parId[id];
+  $('fiche-epoque').textContent = nomEpoque(m.epoque);
+  $('fiche-epoque').style.color = epoques[m.epoque].color;
+  $('fiche-nom').textContent = nom(id);
+  $('fiche-dates').textContent = champ(id, 'dates');
+  $('fiche-texte').textContent = champ(id, 'texte');
+  lienMarche(id);
+  galerie = photosDe(id);
+  document.querySelector('.periodes [data-p="autrefois"]').textContent = galerie.find((p) => p.onglet)?.onglet || t('fiche.autrefois');
+  $('vignettes').innerHTML = galerie.length > 1
+    ? galerie.map((p, k) => `<button aria-label="${echap(t('fiche.photo', { n: k + 1, legende: p.legende }))}"><img src="${p.mini}" alt=""></button>`).join('')
+    : '';
+}
+
 function ouvrir(id) {
   const m = parId[id]; if (!m) return;
   cacherApercu();
-  const ep = epoques[m.epoque];
-  $('fiche-epoque').textContent = ep.label;
-  $('fiche-epoque').style.color = ep.color;
-  $('fiche-nom').textContent = m.name;
-  $('fiche-dates').textContent = m.dates;
-  $('fiche-texte').textContent = m.texte;
-  lienMarche(id);
+  textesFiche(id);
 
   // galerie : d'abord autrefois (du plus ancien au plus récent), puis aujourd'hui
-  galerie = photosDe(id);
   $('galerie').hidden = !galerie.length;
   const aAutrefois = galerie.some((p) => p.periode === 'autrefois');
   const aAujourdhui = galerie.some((p) => p.periode === 'aujourdhui');
   document.querySelector('.periodes').hidden = !(aAutrefois && aAujourdhui);
-  // pour un monument récent, la photo « d'avant » est celle du chantier
-  document.querySelector('.periodes [data-p="autrefois"]').textContent = galerie.find((p) => p.onglet)?.onglet || 'Autrefois';
-  $('vignettes').innerHTML = galerie.length > 1
-    ? galerie.map((p, k) => `<button aria-label="Photo ${k + 1} : ${echap(p.legende)}"><img src="${p.mini}" alt=""></button>`).join('')
-    : '';
   $('photo-a').removeAttribute('src'); $('photo-b').removeAttribute('src');
   $('photo-a').classList.remove('cache'); $('photo-b').classList.add('cache'); calque = 0;
   if (galerie.length) {
@@ -366,25 +390,19 @@ const panneau = $('promenades'), contenu = $('pr-contenu');
 const promenades = marches.promenades;
 let promenade = null, dessin = null;
 const ligne = (coords) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords } });
-const km = (m) => (m / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' km';
-const duree = (min) => {
-  if (min < 60) return `${min} min`;
-  const r = Math.round(min / 5) * 5;
-  return `${Math.floor(r / 60)} h ${String(r % 60).padStart(2, '0')}`;
-};
-const nomLieu = (id) => (id === 'hotel' ? 'Votre hôtel' : parId[id].name);
+const metres = (m) => (m < 1000 ? `${m} m` : km(m));
 
 function listePromenades() {
   contenu.innerHTML =
-    `<div class="pr-tete"><p class="kicker">Depuis votre hôtel</p><h2>Promenades à pied</h2>` +
-    `<p class="pr-sous">Trois parcours pour découvrir le centre historique, sur les rues réelles. Temps de marche sans les visites.</p></div>` +
+    `<div class="pr-tete"><p class="kicker">${t('pr.kicker')}</p><h2>${t('pr.titre')}</h2>` +
+    `<p class="pr-sous">${t('pr.sous')}</p></div>` +
     `<ul class="pr-liste">` + promenades.map((p) =>
       `<li><button data-pr="${p.id}">` +
-      `<span class="pr-nom">${echap(p.nom)}</span>` +
-      `<span class="pr-meta">${p.boucle ? 'Boucle' : 'Aller simple'} · ${km(p.distance)} · ${duree(p.marche)}</span>` +
-      `<span class="pr-intro">${echap(p.intro)}</span>` +
-      `<span class="pr-pastilles">${p.etapes.filter((e) => e.m !== 'hotel').map((e) => `<i style="background:${epoques[parId[e.m].epoque].color}" title="${echap(parId[e.m].name)}"></i>`).join('')}` +
-      `<b>${p.etapes.filter((e) => e.m !== 'hotel').length} étapes</b></span>` +
+      `<span class="pr-nom">${echap(tPromenade(p, 'nom'))}</span>` +
+      `<span class="pr-meta">${t(p.boucle ? 'pr.boucle' : 'pr.aller')} · ${km(p.distance)} · ${duree(p.marche)}</span>` +
+      `<span class="pr-intro">${echap(tPromenade(p, 'intro'))}</span>` +
+      `<span class="pr-pastilles">${p.etapes.filter((e) => e.m !== 'hotel').map((e) => `<i style="background:${epoques[parId[e.m].epoque].color}" title="${echap(nom(e.m))}"></i>`).join('')}` +
+      `<b>${t('pr.etapes', { n: p.etapes.filter((e) => e.m !== 'hotel').length })}</b></span>` +
       `</button></li>`).join('') + `</ul>`;
 }
 
@@ -393,20 +411,20 @@ function detailPromenade(p) {
   const etapes = p.etapes.map((e) => {
     const hotelFin = e.m === 'hotel';
     const ep = hotelFin ? null : epoques[parId[e.m].epoque];
-    const marche = `<li class="pr-marche"><span>${e.min} min · ${e.depuis < 1000 ? e.depuis + ' m' : km(e.depuis)}</span></li>`;
+    const marche = `<li class="pr-marche"><span>${e.min} min · ${metres(e.depuis)}</span></li>`;
     const lieu = hotelFin
-      ? `<li class="pr-lieu hotel"><span class="pt">H</span><div><strong>Retour à l'hôtel</strong></div></li>`
+      ? `<li class="pr-lieu hotel"><span class="pt">H</span><div><strong>${t('pr.retourHotel')}</strong></div></li>`
       : `<li class="pr-lieu"><span class="pt" style="--c:${ep.color}">${++n}</span>` +
-        `<button data-m="${e.m}"><strong>${echap(parId[e.m].name)}</strong><span>${echap(parId[e.m].apercu || '')}</span></button></li>`;
+        `<button data-m="${e.m}"><strong>${echap(nom(e.m))}</strong><span>${echap(champ(e.m, 'apercu') || '')}</span></button></li>`;
     return marche + lieu;
   }).join('');
   contenu.innerHTML =
-    `<button class="pr-retour" data-retour>← Toutes les promenades</button>` +
-    `<div class="pr-tete"><p class="kicker">${p.boucle ? 'Boucle' : 'Aller simple'} depuis l'hôtel</p><h2>${echap(p.nom)}</h2>` +
-    `<p class="pr-chiffres"><span><b>${km(p.distance)}</b> à pied</span><span><b>${duree(p.marche)}</b> de marche</span><span><b>${n}</b> étapes</span></p>` +
-    `<p class="pr-sous">${echap(p.intro)}</p></div>` +
-    `<ol class="pr-etapes"><li class="pr-lieu hotel"><span class="pt">H</span><div><strong>Votre hôtel</strong><span>Départ</span></div></li>${etapes}</ol>` +
-    `<p class="pr-fin">${echap(p.fin)}</p>`;
+    `<button class="pr-retour" data-retour>${t('pr.retourListe')}</button>` +
+    `<div class="pr-tete"><p class="kicker">${t(p.boucle ? 'pr.boucleDepuis' : 'pr.allerDepuis')}</p><h2>${echap(tPromenade(p, 'nom'))}</h2>` +
+    `<p class="pr-chiffres"><span><b>${km(p.distance)}</b> ${t('pr.aPied')}</span><span><b>${duree(p.marche)}</b> ${t('pr.deMarche')}</span><span><b>${n}</b> ${t('pr.etapesCourt')}</span></p>` +
+    `<p class="pr-sous">${echap(tPromenade(p, 'intro'))}</p></div>` +
+    `<ol class="pr-etapes"><li class="pr-lieu hotel"><span class="pt">H</span><div><strong>${t('hotel')}</strong><span>${t('pr.depart')}</span></div></li>${etapes}</ol>` +
+    `<p class="pr-fin">${echap(tPromenade(p, 'fin'))}</p>`;
 }
 
 function ouvrirPromenades() {
@@ -431,6 +449,7 @@ function choisirPromenade(id) {
   // repères : numéro d'étape sur ceux du parcours, les autres s'effacent
   document.body.classList.toggle('en-promenade', !!promenade);
   for (const [mid, el] of reperes) {
+    if (mid === 'hotel') continue;
     const k = promenade ? promenade.etapes.findIndex((e) => e.m === mid) : -1;
     const tete = el.querySelector('.tete');
     tete.dataset.chiffre ??= tete.textContent;
@@ -483,14 +502,48 @@ function lienMarche(id) {
   const d = marches.depuisHotel[id];
   const sur = promenades.filter((p) => p.etapes.some((e) => e.m === id));
   $('fiche-liens').innerHTML =
-    (d ? `<span class="fl-temps">À <b>${duree(d.min)}</b> à pied de l'hôtel · ${km(d.m)}</span>` : '') +
-    sur.map((p) => `<button class="fl-promenade" data-pr="${p.id}">Promenade « ${echap(p.nom)} » →</button>`).join('');
+    (d ? `<span class="fl-temps">${t('fiche.marche', { duree: duree(d.min), km: km(d.m) })}</span>` : '') +
+    sur.map((p) => `<button class="fl-promenade" data-pr="${p.id}">${echap(t('fiche.promenade', { nom: tPromenade(p, 'nom') }))}</button>`).join('');
 }
 $('fiche-liens').addEventListener('click', (e) => {
   const b = e.target.closest('button[data-pr]'); if (!b) return;
   ouvrirPromenades();
   choisirPromenade(b.dataset.pr);
 });
+
+// ---------- langue ----------
+const btnLangue = $('btn-langue'), menuLangue = $('menu-langue');
+const libelleLangue = () => { btnLangue.textContent = `🌐 ${getLang().toUpperCase()} ▾`; };
+libelleLangue();
+function menuOuvert(ouvert = menuLangue.hidden) {
+  if (ouvert) {
+    menuLangue.innerHTML = LANGS.map((l) => `<button role="menuitemradio" aria-checked="${l.code === getLang()}" data-lang="${l.code}" lang="${l.code}"><span>${l.flag}</span>${l.name}</button>`).join('');
+  }
+  menuLangue.hidden = !ouvert;
+  btnLangue.setAttribute('aria-expanded', String(ouvert));
+}
+btnLangue.addEventListener('click', (e) => { e.stopPropagation(); menuOuvert(); });
+document.addEventListener('click', (e) => { if (!menuLangue.hidden && !e.target.closest('.langue')) menuOuvert(false); });
+menuLangue.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-lang]'); if (!b) return;
+  menuOuvert(false);
+  await setLang(b.dataset.lang);
+  traduirePage();
+});
+// réécrit tout ce qui est affiché, sans bouger la carte ni la photo en cours
+function traduirePage() {
+  applyStatic();
+  libelleLangue();
+  dessinerLegende();
+  for (const [id, el] of reperes) {
+    const n = nom(id);
+    el.querySelector('.nom').textContent = n;
+    el.setAttribute('aria-label', n);
+  }
+  apercuId = null;
+  if (actif) { textesFiche(actif); if (galerie[indexPhoto]) afficherPhotoInfos(indexPhoto); }
+  if (!panneau.hidden) { if (promenade) detailPromenade(promenade); else listePromenades(); }
+}
 
 function intro() {
   const v = vueAccueil();

@@ -8,7 +8,8 @@ Suite de « Bordeaux à la carte » (bars et restaurants).
 **Prototype visuel** : 17 monuments avec un aperçu au survol et une fiche illustrée
 (photos « Autrefois / Aujourd'hui », visionneuse plein écran), les autres bâtiments protégés en beige
 (lien vers leur notice officielle Mérimée), et trois promenades à pied depuis l'hôtel tracées sur les rues.
-Pas encore de traductions ni de mode hors ligne.
+En cinq langues (français, anglais, espagnol, italien, allemand ; menu 🌐, langue du téléphone détectée).
+Pas encore de mode hors ligne.
 
 ## Lancer
 
@@ -48,6 +49,10 @@ python3 scripts/photos.py  # télécharge les photos (Pillow requis)
 Pour changer une photo, modifier sa ligne dans `scripts/photos.py` (nom exact du fichier sur Commons),
 supprimer l'image correspondante dans `img/monuments/` puis relancer le script.
 
+- Traductions : le français est la langue source (interface dans `js/i18n.js`, contenus dans `data/`).
+  Les autres langues sont dans `js/lang/<code>.js`, chargées seulement quand on les choisit. Les légendes
+  de photos y sont rangées dans l'ordre de `data/photos.json` : si l'on ajoute ou retire une photo dans
+  `scripts/photos.py`, mettre à jour les quatre fichiers. Un texte absent d'une langue s'affiche en français.
 - Les promenades (nom, texte, ordre des étapes) se règlent en haut de `scripts/promenades.mjs`.
   Le plus court chemin est calculé à 70 m/min, en évitant un peu les grands boulevards.
 - La forme de l'île se règle dans `scripts/build.mjs` (points `CTRL`).
