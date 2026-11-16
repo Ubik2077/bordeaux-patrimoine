@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Port de la Lune — affiche</title>
+  <!-- Affiche A5 à poser à la réception. Imprimer depuis le navigateur (format A5, marges : aucune),
+       ou régénérer affiche-clients.pdf avec scripts/affiche.sh. Le QR code est calculé à l'ouverture. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --parchemin: #f3e8d4; --parchemin-2: #e9d9bc; --filet: #c9b088;
+      --brun: #3b2a1d; --brun-doux: #74604b; --bordeaux: #7a2340;
+      --serif: 'Cormorant Garamond', Georgia, serif; --sans: Inter, -apple-system, sans-serif;
+    }
+    @page { size: A5; margin: 0; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body { background: #8d8273; font-family: var(--sans); color: var(--brun); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    .affiche {
+      position: relative; width: 148mm; height: 210mm; margin: 10mm auto; padding: 8mm 9mm 7mm;
+      background: linear-gradient(170deg, var(--parchemin) 0%, var(--parchemin-2) 100%);
+      display: flex; flex-direction: column; align-items: center; text-align: center; overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
+    }
+    /* double filet, comme le cartouche d'une carte ancienne */
+    .affiche::before, .affiche::after { content: ''; position: absolute; pointer-events: none; border: .5mm solid var(--brun); }
+    .affiche::before { inset: 4mm; }
+    .affiche::after { inset: 5.2mm; border-width: .2mm; border-color: var(--filet); }
+
+    .kicker { margin: 1.5mm 0 0; font-size: 7.2pt; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--bordeaux); }
+    h1 { margin: 1mm 0 0; font-family: var(--serif); font-weight: 600; font-size: 40pt; line-height: .95; letter-spacing: -.01em; }
+    .sous { margin: 1.5mm 0 0; font-family: var(--serif); font-size: 15pt; font-weight: 600; line-height: 1.1; }
+    .en { margin: .5mm 0 0; font-family: var(--serif); font-style: italic; font-size: 12.5pt; color: var(--brun-doux); }
+    .autres { margin: .8mm 0 0; font-size: 6.6pt; color: var(--brun-doux); letter-spacing: .02em; }
+
+    .carte {
+      width: 100%; height: 63mm; margin-top: 3.5mm; border-radius: 3mm; overflow: hidden;
+      background: #f2eee5 center / cover no-repeat; border: .3mm solid var(--filet);
+      box-shadow: inset 0 0 0 1.2mm rgba(255,255,255,.35);
+    }
+    .epoques { display: flex; justify-content: center; flex-wrap: wrap; gap: 1mm 3mm; margin-top: 2mm; font-size: 6.8pt; font-weight: 500; }
+    .epoques span { display: inline-flex; align-items: center; gap: 1.2mm; }
+    .epoques i { width: 2.4mm; height: 2.4mm; border-radius: .5mm; box-shadow: inset 0 -.5mm 0 rgba(0,0,0,.18); }
+
+    .scan { display: flex; align-items: center; gap: 5mm; width: 100%; margin-top: 4mm; text-align: left; }
+    .qr { flex: none; width: 40mm; height: 40mm; padding: 2mm; background: #fff; border: .5mm solid var(--brun); border-radius: 2.5mm; }
+    .qr svg { display: block; width: 100%; height: 100%; }
+    .scan-txt { flex: 1; }
+    .scan-txt .fr { margin: 0; font-family: var(--serif); font-size: 17pt; font-weight: 700; line-height: 1.02; }
+    .scan-txt .en { margin: 1mm 0 0; font-size: 11.5pt; }
+    .scan-txt .url { margin: 2.5mm 0 0; font-size: 6.6pt; color: var(--bordeaux); font-weight: 600; letter-spacing: .02em; word-break: break-all; }
+    .fleche { display: inline-block; margin-right: 1mm; color: var(--bordeaux); }
+
+    .atouts { list-style: none; margin: 4mm 0 0; padding: 2.6mm 0 0; width: 100%; border-top: .3mm solid var(--filet); text-align: left; display: grid; gap: 1.6mm; }
+    .atouts li { display: grid; grid-template-columns: 6mm 1fr; align-items: center; }
+    .atouts svg { width: 4.4mm; height: 4.4mm; fill: none; stroke: var(--bordeaux); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .atouts b { display: block; font-size: 8.4pt; font-weight: 600; line-height: 1.2; }
+    .atouts em { display: block; font-family: var(--serif); font-size: 9.5pt; color: var(--brun-doux); line-height: 1.1; }
+
+    .langues { margin-top: auto; font-size: 7pt; font-weight: 600; letter-spacing: .08em; color: var(--brun); }
+    .pied { margin: 1.2mm 0 1mm; font-size: 6.4pt; color: var(--brun-doux); }
+
+    .boutons { display: flex; justify-content: center; gap: 10px; margin: 0 0 14px; }
+    .boutons button { padding: 9px 18px; border: 0; border-radius: 999px; background: var(--bordeaux); color: #fff; font: 600 14px var(--sans); cursor: pointer; }
+    @media print {
+      body { background: none; }
+      .affiche { margin: 0; box-shadow: none; }
+      .boutons { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="affiche">
+    <p class="kicker">Bordeaux · Patrimoine mondial de l'UNESCO</p>
+    <h1>Port de la Lune</h1>
+    <p class="sous">Les monuments historiques de Bordeaux, en relief</p>
+    <p class="en">Bordeaux’s historic monuments in 3D</p>
+    <p class="autres">Monumentos históricos en 3D · Monumenti storici in 3D · Historische Denkmäler in 3D</p>
+
+    <div class="carte" style="background-image:url('img/affiche/carte.jpg')" role="img" aria-label="La carte 3D du centre de Bordeaux"></div>
+    <div class="epoques">
+      <span><i style="background:#b4553d"></i>Antiquité</span>
+      <span><i style="background:#4a67a0"></i>Moyen Âge</span>
+      <span><i style="background:#c4912a"></i>XVIIIᵉ siècle</span>
+      <span><i style="background:#3f8467"></i>XIXᵉ siècle</span>
+      <span><i style="background:#8a2c4c"></i>XXᵉ–XXIᵉ siècle</span>
+    </div>
+
+    <div class="scan">
+      <div class="qr" id="qr"></div>
+      <div class="scan-txt">
+        <p class="fr"><span class="fleche">←</span>Scannez avec l’appareil photo de votre téléphone</p>
+        <p class="en">Scan with your phone camera</p>
+        <p class="url" id="url"></p>
+      </div>
+    </div>
+
+    <ul class="atouts">
+      <li>
+        <svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V10m14 11V10M9 21v-7m6 7v-7M2.5 10 12 4l9.5 6z"/></svg>
+        <div><b>17 monuments, photos d’autrefois et d’aujourd’hui</b><em>17 monuments, then &amp; now photos</em></div>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24"><circle cx="13" cy="4" r="2"/><path d="m9.5 21 2-6 3 3v3m-5.5-9 1-4 4 2 2 3M9 8l-3 4"/></svg>
+        <div><b>3 promenades à pied depuis l’hôtel</b><em>3 walking tours from the hotel</em></div>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24"><path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5zM9 4v13.5m6-11V20"/></svg>
+        <div><b>La ville en 3D, époque par époque</b><em>The city in 3D, era by era</em></div>
+      </li>
+    </ul>
+
+    <p class="langues">Français · English · Español · Italiano · Deutsch</p>
+    <p class="pied" id="pied"></p>
+  </main>
+  <div class="boutons"><button onclick="print()">Imprimer l’affiche (A5)</button></div>
+
+  <script src="vendor/qrcode.js"></script>
+  <script>
+    const URL_SITE = 'https://ubik2077.github.io/bordeaux-patrimoine/';
+    const qr = qrcode(0, 'M');
+    qr.addData(URL_SITE); qr.make();
+    document.getElementById('qr').innerHTML = qr.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+    document.getElementById('url').textContent = URL_SITE.replace('https://', '').replace(/\/$/, '');
+    // nom de l'hôtel : le même que dans la carte (data/monuments.json)
+    fetch('data/monuments.json').then((r) => r.json())
+      .then((d) => { document.getElementById('pied').textContent = d.hotel?.name || ''; })
+      .catch(() => {});
+  </script>
+</body>
+</html>

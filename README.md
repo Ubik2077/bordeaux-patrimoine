@@ -20,6 +20,15 @@ Chaque `git push` sur `main` met le site à jour en une à deux minutes. Après 
 `js/` ou `css/`, augmenter le numéro `?v=` dans `index.html` (et dans les `import` de `js/app.js` et `js/i18n.js`)
 pour que les visiteurs ne gardent pas l'ancienne version en cache.
 
+## 🖨️ Affiche pour la réception
+
+[affiche-clients.pdf](affiche-clients.pdf) : affiche A5 avec le QR code du site, en français et en anglais
+(les autres langues sont annoncées). À imprimer en A5, sans marges, sans mise à l'échelle.
+Elle est aussi en ligne : <https://ubik2077.github.io/bordeaux-patrimoine/affiche.html> (bouton « Imprimer »).
+
+Pour la modifier : éditer `affiche.html`, puis `sh scripts/affiche.sh` (site lancé en local) regénère le PDF.
+L'image de la carte est une capture de la carte 3D (`?capture`, voir le script).
+
 ## Lancer
 
 ```bash

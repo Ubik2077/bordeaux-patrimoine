@@ -1,8 +1,8 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
 // ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
-import { deplier, polygonesAutour } from './compact.js?v=23';
-import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=23';
+import { deplier, polygonesAutour } from './compact.js?v=24';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=24';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -30,10 +30,20 @@ const champ = (id, c) => tMonument(parId[id], c);
 const nomEpoque = (k) => tEpoque(k, epoques[k].label);
 const ZONE_BB = zone.geometry.coordinates[0].reduce((b, [x, y]) => [[Math.min(b[0][0], x), Math.min(b[0][1], y)], [Math.max(b[1][0], x), Math.max(b[1][1], y)]], [[180, 90], [-180, -90]]);
 
+// ?capture : carte seule, sans cartouches ni animation (image de l'affiche, scripts/affiche.sh)
+const PARAMS = new URLSearchParams(location.search);
+const CAPTURE = PARAMS.has('capture');
+// ?capture&vue=lon,lat,zoom,orientation,inclinaison : cadrage imposé
+const VUE_IMPOSEE = (() => {
+  const v = (PARAMS.get('vue') || '').split(',').map(Number);
+  return v.length === 5 && v.every(Number.isFinite) ? { center: [v[0], v[1]], zoom: v[2], bearing: v[3], pitch: v[4] } : null;
+})();
+if (CAPTURE) document.body.classList.add('capture');
+
 // vue d'ensemble : toute l'île, en laissant la place au cartouche du titre
 function vueAccueil() {
   const mobile = innerWidth <= 640;
-  const padding = { top: 30, bottom: 30, left: 350, right: 60 };
+  const padding = CAPTURE ? { top: 10, bottom: 10, left: 10, right: 10 } : { top: 30, bottom: 30, left: 350, right: 60 };
   // sur téléphone (écran en hauteur), l'île entière serait minuscule : on cadre le cœur historique
   if (mobile) return { center: [-0.5728, 44.8405], zoom: 13.4, bearing: VUE.bearing, pitch: 50 };
   const c = map.cameraForBounds(ZONE_BB, { bearing: VUE.bearing, pitch: VUE.pitch, padding });
@@ -628,6 +638,7 @@ function traduirePage() {
 
 function intro() {
   const v = vueAccueil();
+  if (CAPTURE) return map.jumpTo(VUE_IMPOSEE || v);
   map.jumpTo({ ...v, zoom: v.zoom - 0.6, bearing: v.bearing - 40, pitch: 30 });
   map.flyTo({ ...v, duration: 3200, essential: true });
 }

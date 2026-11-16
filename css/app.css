@@ -341,3 +341,6 @@ body.fiche-ouverte .outils { right: 456px; }
   body.fiche-ouverte .liste, body.promenades-ouvertes .liste { display: none; }
 }
 @keyframes monte { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+
+/* ?capture : la carte seule, pour l'image de l'affiche */
+body.capture .card, body.capture .outils, body.capture .credits, body.capture .maplibregl-ctrl { display: none !important; }
