@@ -10,16 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vendor/maplibre-gl.css">
-  <link rel="stylesheet" href="css/app.css?v=18">
+  <link rel="stylesheet" href="css/app.css?v=22">
 </head>
 <body>
   <div id="map" data-i18n-aria="carte.aria" aria-label="Carte 3D du centre historique de Bordeaux"></div>
 
   <header class="card titre" id="titre">
-    <div class="langue">
-      <button id="btn-langue" data-i18n-title="langue.titre" title="Changer de langue" aria-haspopup="true" aria-expanded="false">🌐 FR ▾</button>
-      <div class="menu-langue" id="menu-langue" role="menu" hidden></div>
-    </div>
     <p class="kicker" data-i18n="titre.kicker">Bordeaux · Patrimoine mondial de l'UNESCO</p>
     <h1>Port de la Lune</h1>
     <p class="sous-titre" data-i18n="titre.sous">Les monuments historiques du centre, en relief</p>
@@ -35,6 +31,14 @@
     <button class="fermer" id="promenades-fermer" data-i18n-aria="pr.fermer" aria-label="Fermer les promenades">×</button>
     <div class="pr-defile" id="pr-contenu"></div>
   </aside>
+
+  <nav class="card liste" id="liste" data-i18n-aria="liste.aria" aria-label="Liste des monuments">
+    <button class="liste-tete" id="liste-bascule" aria-expanded="true" aria-controls="liste-corps" title="Masquer la liste">
+      <span class="liste-icone" aria-hidden="true">☰</span><span data-i18n="liste.titre">Les monuments</span>
+      <span class="nb" id="liste-nb"></span><span class="chevron" aria-hidden="true">▾</span>
+    </button>
+    <div class="liste-corps" id="liste-corps"></div>
+  </nav>
 
   <aside class="card fiche" id="fiche" hidden role="dialog" aria-labelledby="fiche-nom">
     <button class="fermer" id="fiche-fermer" data-i18n-aria="fiche.fermer" aria-label="Fermer la fiche">×</button>
@@ -71,6 +75,10 @@
   </div>
 
   <div class="outils" role="toolbar" data-i18n-aria="outils.aria" aria-label="Vue">
+    <div class="langue">
+      <button id="btn-langue" data-i18n-title="langue.titre" title="Changer de langue" aria-haspopup="true" aria-expanded="false">FR</button>
+      <div class="menu-langue" id="menu-langue" role="menu" hidden></div>
+    </div>
     <button id="btn-tour" data-i18n-title="outils.tour" title="Faire tourner la vue" aria-pressed="false">⟳</button>
     <button id="btn-3d" data-i18n-title="outils.3d" title="Basculer vue 2D / 3D">2D</button>
     <button id="btn-accueil" data-i18n-title="outils.accueil" title="Revenir à la vue d'ensemble">⌂</button>
@@ -79,6 +87,6 @@
   <p class="credits" data-i18n="credits">Bâtiments © IGN BD TOPO · Monuments et arbres © contributeurs OpenStreetMap · Prototype</p>
 
   <script src="vendor/maplibre-gl.js"></script>
-  <script type="module" src="js/app.js?v=18"></script>
+  <script type="module" src="js/app.js?v=23"></script>
 </body>
 </html>

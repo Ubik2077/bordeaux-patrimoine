@@ -22,6 +22,10 @@ const FR = {
   'legende.protege': 'Autre bâtiment protégé',
   'langue.titre': 'Changer de langue',
   'btn.promenades': "Promenades à pied depuis l'hôtel",
+  'liste.titre': 'Les monuments',
+  'liste.aria': 'Liste des monuments',
+  'liste.masquer': 'Masquer la liste',
+  'liste.afficher': 'Afficher la liste',
   'outils.aria': 'Vue',
   'outils.tour': 'Faire tourner la vue',
   'outils.3d': 'Basculer vue 2D / 3D',
@@ -86,7 +90,7 @@ export const getLocale = () => LANGS.find((l) => l.code === lang).locale;
 export async function setLang(l) {
   if (!CODES.includes(l)) l = 'fr';
   if (!charges[l]) {
-    try { charges[l] = (await import(`./lang/${l}.js?v=18`)).default; } catch { l = 'fr'; }
+    try { charges[l] = (await import(`./lang/${l}.js?v=23`)).default; } catch { l = 'fr'; }
   }
   lang = l;
   try { localStorage.setItem(CLE, l); } catch { /* stockage indisponible */ }

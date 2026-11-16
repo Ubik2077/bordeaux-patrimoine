@@ -1,8 +1,8 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
 // ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
-import { deplier, polygonesAutour } from './compact.js?v=18';
-import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=18';
+import { deplier, polygonesAutour } from './compact.js?v=23';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=23';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -207,6 +207,7 @@ function legende() {
     }
     if (map.getLayer('bati')) map.setPaintProperty('bati', 'fill-extrusion-color', couleurBati(actives));
     for (const [id, el] of reperes) if (parId[id]) el.classList.toggle('estompe', !actives.has(parId[id].epoque));
+    majListe();
   });
 }
 legende();
@@ -299,6 +300,7 @@ function ouvrir(id) {
   reperes.get(actif)?.classList.remove('actif');
   reperes.get(id)?.classList.add('actif');
   actif = id;
+  majListe();
   arreterTour();
   const mobile = innerWidth <= 640;
   map.flyTo({
@@ -332,6 +334,7 @@ function fermer() {
   document.body.classList.remove('fiche-ouverte');
   reperes.get(actif)?.classList.remove('actif');
   actif = null;
+  majListe();
   map.easeTo({ padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: 600 });
 }
 $('fiche-fermer').addEventListener('click', fermer);
@@ -434,6 +437,7 @@ function ouvrirPromenades() {
   $('btn-promenades').setAttribute('aria-expanded', 'true');
   panneau.style.animation = 'none'; void panneau.offsetWidth; panneau.style.animation = '';
   contenu.scrollTop = 0;
+  placerListe();
 }
 function fermerPromenades() {
   panneau.hidden = true;
@@ -441,6 +445,7 @@ function fermerPromenades() {
   $('btn-promenades').setAttribute('aria-expanded', 'false');
   if (promenade) map.easeTo({ padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: 600 });
   choisirPromenade(null);
+  placerListe();
 }
 
 function choisirPromenade(id) {
@@ -511,9 +516,83 @@ $('fiche-liens').addEventListener('click', (e) => {
   choisirPromenade(b.dataset.pr);
 });
 
+// ---------- liste des monuments (repliable, visible en permanence) ----------
+const liste = $('liste'), listeCorps = $('liste-corps'), btnListe = $('liste-bascule');
+function dessinerListe() {
+  const visibles = monuments.filter((m) => !m.hidePin);
+  $('liste-nb').textContent = visibles.length;
+  listeCorps.innerHTML = Object.keys(epoques).map((k) => {
+    const ms = visibles.filter((m) => m.epoque === k);
+    if (!ms.length) return '';
+    return `<p class="liste-ep" style="color:${epoques[k].color}">${nomEpoque(k)}</p>` + ms.map((m) => {
+      const d = marches.depuisHotel[m.id];
+      return `<button class="liste-m" data-m="${m.id}"><i style="background:${epoques[k].color}"></i>` +
+        `<span>${echap(nom(m.id))}</span>${d ? `<small>${duree(d.min)}</small>` : ''}</button>`;
+    }).join('');
+  }).join('');
+  majListe();
+}
+// monument ouvert en surbrillance, époques masquées par la légende estompées
+function majListe() {
+  for (const b of listeCorps.querySelectorAll('.liste-m')) {
+    b.classList.toggle('actif', b.dataset.m === actif);
+    if (b.dataset.m === actif) {
+      b.setAttribute('aria-current', 'true');
+      // la ligne reste visible : défilement de la liste seule (scrollIntoView bougerait aussi la page)
+      const y = b.offsetTop - listeCorps.offsetTop, c = listeCorps;
+      if (listeOuverte && (y < c.scrollTop || y + b.offsetHeight > c.scrollTop + c.clientHeight)) {
+        c.scrollTo({ top: y - (c.clientHeight - b.offsetHeight) / 2, behavior: 'smooth' });
+      }
+    } else b.removeAttribute('aria-current');
+    b.classList.toggle('estompe', !actives.has(parId[b.dataset.m].epoque));
+  }
+}
+// ouverte par défaut sur ordinateur, repliée sur téléphone ; le choix est retenu
+let listeOuverte = (() => {
+  try { const v = localStorage.getItem('pl.liste'); if (v) return v === '1'; } catch { /* stockage indisponible */ }
+  return innerWidth > 640;
+})();
+function basculerListe(ouverte = !listeOuverte, memoriser = true) {
+  listeOuverte = ouverte;
+  liste.classList.toggle('repliee', !ouverte);
+  btnListe.setAttribute('aria-expanded', String(ouverte));
+  btnListe.title = t(ouverte ? 'liste.masquer' : 'liste.afficher');
+  if (memoriser) try { localStorage.setItem('pl.liste', ouverte ? '1' : '0'); } catch { /* stockage indisponible */ }
+  placerListe();
+}
+// la liste occupe la place libre sous le cartouche (ou sous le panneau des promenades)
+function placerListe() {
+  const H = innerHeight, bas = 30, marge = 12, tete = btnListe.offsetHeight || 44;
+  if (innerWidth <= 640) { listeCorps.style.maxHeight = Math.round(H * 0.5) + 'px'; panneau.style.maxHeight = ''; return; }
+  if (!panneau.hidden) {
+    const corps = listeOuverte ? Math.min(listeCorps.scrollHeight, H * 0.38 - tete) : 0;
+    listeCorps.style.maxHeight = Math.max(80, corps) + 'px';
+    panneau.style.maxHeight = (H - 18 - bas - tete - (listeOuverte ? Math.max(80, corps) : 0) - marge) + 'px';
+  } else {
+    panneau.style.maxHeight = '';
+    const haut = $('titre').getBoundingClientRect().bottom;
+    listeCorps.style.maxHeight = Math.max(110, H - haut - marge - bas - tete) + 'px';
+  }
+}
+btnListe.addEventListener('click', () => basculerListe());
+listeCorps.addEventListener('click', (e) => { const b = e.target.closest('.liste-m'); if (b) ouvrir(b.dataset.m); });
+// survol d'une ligne : le repère correspondant grossit sur la carte
+listeCorps.addEventListener('mouseover', (e) => {
+  const b = e.target.closest('.liste-m');
+  for (const [id, el] of reperes) el.classList.toggle('survol', !!b && id === b.dataset.m);
+});
+listeCorps.addEventListener('mouseleave', () => { for (const el of reperes.values()) el.classList.remove('survol'); });
+addEventListener('resize', placerListe);
+document.fonts?.ready.then(placerListe);
+dessinerListe();
+basculerListe(listeOuverte, false);
+
 // ---------- langue ----------
 const btnLangue = $('btn-langue'), menuLangue = $('menu-langue');
-const libelleLangue = () => { btnLangue.textContent = `🌐 ${getLang().toUpperCase()} ▾`; };
+const libelleLangue = () => {
+  btnLangue.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.7 2.6 15.3 0 18M12 3c-2.6 2.7-2.6 15.3 0 18"/></svg><b>${getLang().toUpperCase()}</b>`;
+  btnLangue.setAttribute('aria-label', `${t('langue.titre')} (${getLang().toUpperCase()})`);
+};
 libelleLangue();
 function menuOuvert(ouvert = menuLangue.hidden) {
   if (ouvert) {
@@ -543,6 +622,8 @@ function traduirePage() {
   apercuId = null;
   if (actif) { textesFiche(actif); if (galerie[indexPhoto]) afficherPhotoInfos(indexPhoto); }
   if (!panneau.hidden) { if (promenade) detailPromenade(promenade); else listePromenades(); }
+  dessinerListe();
+  basculerListe(listeOuverte, false);
 }
 
 function intro() {

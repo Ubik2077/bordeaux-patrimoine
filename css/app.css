@@ -49,25 +49,23 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .legende .info { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 12.5px; color: var(--brun-doux); }
 .legende-aide { margin: 8px 0 0; font-size: 11.5px; color: var(--brun-doux); }
 
-/* langue : petit bouton en haut à droite du cartouche */
-.langue { position: absolute; top: 12px; right: 12px; z-index: 3; }
-#btn-langue {
-  padding: 4px 8px; border: 1px solid var(--filet); border-radius: 999px; background: rgba(255, 250, 240, .6);
-  font-size: 11.5px; font-weight: 600; color: var(--brun);
-}
-#btn-langue:hover { background: #fbf4e6; }
+/* langue : premier bouton de la barre d'outils, le menu s'ouvre vers la gauche */
+.langue { position: relative; }
+.outils #btn-langue { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 0; }
+#btn-langue svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+#btn-langue b { font-size: 10px; letter-spacing: .04em; line-height: 1; }
 .menu-langue {
-  position: absolute; top: calc(100% + 6px); right: 0; min-width: 150px; padding: 5px;
+  position: absolute; right: calc(100% + 8px); top: 0; min-width: 150px; padding: 5px;
   background: var(--parchemin); border: 1px solid var(--filet); border-radius: 11px; box-shadow: var(--ombre);
   display: flex; flex-direction: column; gap: 1px; animation: apparait .14s ease-out;
 }
-.menu-langue button {
-  display: flex; align-items: center; gap: 9px; padding: 7px 10px; border: 0; border-radius: 7px; background: none;
-  font-size: 13.5px; text-align: left; color: var(--brun);
+.outils .menu-langue button {
+  display: flex; align-items: center; gap: 9px; width: auto; height: auto; padding: 7px 10px;
+  border: 0; border-radius: 7px; background: none; box-shadow: none;
+  font-size: 13.5px; font-weight: 500; text-align: left; color: var(--brun); white-space: nowrap;
 }
-.menu-langue button:hover { background: rgba(80, 50, 20, .07); }
-.menu-langue button[aria-checked="true"] { background: var(--brun); color: var(--parchemin); }
-.titre .kicker { padding-right: 64px; }
+.outils .menu-langue button:hover { background: rgba(80, 50, 20, .07); }
+.outils .menu-langue button[aria-checked="true"] { background: var(--brun); color: var(--parchemin); }
 
 /* bouton d'accès aux promenades, dans le cartouche */
 .btn-promenades {
@@ -140,6 +138,37 @@ body.promenades-ouvertes .titre { display: none; }
 .fiche-liens b { color: var(--brun); }
 .fl-promenade { padding: 7px 12px; border: 1px solid rgba(122, 35, 64, .35); border-radius: 999px; background: rgba(122, 35, 64, .06); color: var(--bordeaux); font-size: 12.5px; font-weight: 600; }
 .fl-promenade:hover { background: rgba(122, 35, 64, .12); }
+
+/* ---------- liste des monuments (coin bas gauche, repliable) ---------- */
+.liste { left: 18px; bottom: 30px; width: 300px; display: flex; flex-direction: column; overflow: hidden; }
+.liste-tete {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px 14px; border: 0; background: none;
+  font-family: var(--serif); font-size: 19px; font-weight: 700; color: var(--brun); text-align: left;
+}
+.liste-tete:hover { background: rgba(80, 50, 20, .05); }
+.liste-icone { font-family: var(--sans); font-size: 14px; color: var(--bordeaux); }
+.liste-tete .nb {
+  padding: 1px 7px; border-radius: 999px; background: rgba(122, 35, 64, .1); color: var(--bordeaux);
+  font: 600 11px/1.6 var(--sans);
+}
+.liste-tete .chevron { margin-left: auto; font-size: 13px; color: var(--brun-doux); transition: transform .25s; }
+.liste.repliee .chevron { transform: rotate(180deg); }
+.liste-corps { overflow-y: auto; padding: 2px 8px 10px; border-top: 1px solid var(--filet); overscroll-behavior: contain; }
+.liste.repliee .liste-corps { display: none; }
+.liste-ep { margin: 10px 8px 3px; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; }
+.liste-m {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 6px 8px; border: 0; border-radius: 7px;
+  background: none; text-align: left; font-size: 13.5px; color: var(--brun); transition: background .15s, opacity .2s;
+}
+.liste-m:hover { background: rgba(80, 50, 20, .07); }
+.liste-m i { flex: none; width: 9px; height: 9px; border-radius: 50%; box-shadow: 0 0 0 1.5px #fff8ec; }
+.liste-m span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.liste-m small { flex: none; font-size: 11px; color: var(--brun-doux); font-variant-numeric: tabular-nums; }
+.liste-m.actif { background: var(--brun); color: var(--parchemin); }
+.liste-m.actif small { color: var(--parchemin-3); }
+.liste-m.estompe { opacity: .4; }
+.repere.survol .tete { transform: scale(1.18); }
+.repere.survol .nom { opacity: 1; transform: none; }
 
 /* ---------- repères des monuments ---------- */
 .repere { position: relative; width: 0; height: 0; cursor: pointer; }
@@ -307,5 +336,8 @@ body.fiche-ouverte .outils { right: 456px; }
   body.promenades-ouvertes .titre .legende, body.promenades-ouvertes .btn-promenades { display: none; }
   body.promenades-ouvertes .outils { display: none; }
   .fiche { z-index: 3; }
+  .liste { left: 10px; bottom: 34px; width: auto; max-width: calc(100% - 80px); }
+  .liste-tete { padding: 8px 12px; font-size: 17px; }
+  body.fiche-ouverte .liste, body.promenades-ouvertes .liste { display: none; }
 }
 @keyframes monte { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
