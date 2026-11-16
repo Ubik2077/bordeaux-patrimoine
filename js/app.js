@@ -9,7 +9,9 @@ const COUL = {
 const VUE = { center: [-0.5705, 44.8435], zoom: 13.2, pitch: 52, bearing: -28 };
 
 const json = (u) => fetch(u).then((r) => r.json());
-const [zone, meta] = await Promise.all([json('data/zone.json'), json('data/monuments.json')]);
+const [zone, meta, photos] = await Promise.all([
+  json('data/zone.json'), json('data/monuments.json'), json('data/photos.json').catch(() => ({})),
+]);
 const { epoques, monuments, hotel } = meta;
 const parId = Object.fromEntries(monuments.map((m) => [m.id, m]));
 const ZONE_BB = zone.geometry.coordinates[0].reduce((b, [x, y]) => [[Math.min(b[0][0], x), Math.min(b[0][1], y)], [Math.max(b[1][0], x), Math.max(b[1][1], y)]], [[180, 90], [-180, -90]]);
@@ -102,8 +104,14 @@ map.on('load', () => {
         .addTo(map);
     }
   });
-  map.on('mousemove', 'bati', (ev) => { const p = ev.features[0].properties; map.getCanvas().style.cursor = p.m || p.r ? 'pointer' : ''; });
-  map.on('mouseleave', 'bati', () => { map.getCanvas().style.cursor = ''; });
+  map.on('mousemove', 'bati', (ev) => {
+    const p = ev.features[0].properties;
+    map.getCanvas().style.cursor = p.m || p.r ? 'pointer' : '';
+    if (p.m) montrerApercu(p.m === 'fleche' ? 'saintmichel' : p.m, ev.point.x, ev.point.y - 6);
+    else cacherApercu();
+  });
+  map.on('mouseleave', 'bati', () => { map.getCanvas().style.cursor = ''; cacherApercu(); });
+  map.on('movestart', cacherApercu);
 
   poserReperes();
   intro();
@@ -132,6 +140,11 @@ function poserReperes() {
     const go = (e) => { e.stopPropagation(); ouvrir(m.id); };
     el.addEventListener('click', go);
     el.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') go(e); });
+    const survol = () => { const r = el.querySelector('.tete').getBoundingClientRect(); montrerApercu(m.id, r.left + r.width / 2, r.top - 2); };
+    el.addEventListener('mouseenter', survol);
+    el.addEventListener('focus', survol);
+    el.addEventListener('mouseleave', cacherApercu);
+    el.addEventListener('blur', cacherApercu);
     reperes.set(m.id, el);
   }
   const h = repere({ at: hotel.at, color: '#22252b', label: 'Votre hôtel', initiale: 'H', classe: 'hotel' });
@@ -168,19 +181,82 @@ function legende() {
 }
 legende();
 
+// ---------- aperçu au survol ----------
+const apercu = document.getElementById('apercu');
+const echap = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const photosDe = (id) => photos[id] || [];
+const photoActuelle = (id) => { const l = photosDe(id); return l.find((p) => p.periode === 'aujourdhui') || l[0]; };
+let apercuId = null;
+function montrerApercu(id, x, y) {
+  if (matchMedia('(hover: none)').matches || id === actif) return cacherApercu();
+  const m = parId[id]; if (!m) return;
+  if (apercuId !== id) {
+    const ep = epoques[m.epoque], ph = photoActuelle(id);
+    apercu.innerHTML =
+      (ph ? `<img src="${ph.mini}" alt="">` : '') +
+      `<div class="ap-corps"><p class="ap-epoque" style="color:${ep.color}">${ep.label} · ${echap(m.dates)}</p>` +
+      `<p class="ap-nom">${echap(m.name)}</p><p class="ap-texte">${echap(m.apercu || '')}</p>` +
+      `<p class="ap-plus">Cliquez pour en savoir plus</p></div>`;
+    apercuId = id;
+  }
+  // garde la bulle dans l'écran (elle s'affiche au-dessus du point visé)
+  const h = apercu.offsetHeight || 260;
+  apercu.style.left = Math.min(Math.max(x, 135), innerWidth - 135) + 'px';
+  apercu.style.top = Math.max(y, h + 20) + 'px';
+  apercu.hidden = false;
+}
+function cacherApercu() { apercu.hidden = true; apercuId = null; }
+
 // ---------- fiche ----------
 const fiche = document.getElementById('fiche');
-let actif = null;
+const $ = (id) => document.getElementById(id);
+let actif = null, galerie = [], indexPhoto = 0, calque = 0; // calque : 0 = image A visible, 1 = image B visible
+
+function afficherPhoto(i) {
+  const ph = galerie[i]; if (!ph) return;
+  // fondu enchaîné entre deux images superposées
+  const [a, b] = calque ? [$('photo-b'), $('photo-a')] : [$('photo-a'), $('photo-b')]; // a visible, b suivante
+  b.onload = () => { b.classList.remove('cache'); a.classList.add('cache'); };
+  b.src = ph.src; b.alt = ph.legende;
+  b.classList.toggle('document', ph.periode === 'autrefois');
+  calque = 1 - calque;
+  afficherPhotoInfos(i);
+}
+
 function ouvrir(id) {
   const m = parId[id]; if (!m) return;
+  cacherApercu();
   const ep = epoques[m.epoque];
-  document.getElementById('fiche-epoque').textContent = ep.label;
-  document.getElementById('fiche-epoque').style.color = ep.color;
-  document.getElementById('fiche-nom').textContent = m.name;
-  document.getElementById('fiche-dates').textContent = m.dates;
-  document.getElementById('fiche-texte').textContent = m.texte;
-  document.getElementById('fiche-liens').innerHTML = 'Bientôt : photos, itinéraire depuis l\'hôtel, horaires de visite.';
+  $('fiche-epoque').textContent = ep.label;
+  $('fiche-epoque').style.color = ep.color;
+  $('fiche-nom').textContent = m.name;
+  $('fiche-dates').textContent = m.dates;
+  $('fiche-texte').textContent = m.texte;
+  $('fiche-liens').textContent = 'Bientôt : itinéraire depuis l’hôtel, horaires et tarifs de visite.';
+
+  // galerie : d'abord autrefois (du plus ancien au plus récent), puis aujourd'hui
+  galerie = photosDe(id);
+  $('galerie').hidden = !galerie.length;
+  const aAutrefois = galerie.some((p) => p.periode === 'autrefois');
+  const aAujourdhui = galerie.some((p) => p.periode === 'aujourdhui');
+  document.querySelector('.periodes').hidden = !(aAutrefois && aAujourdhui);
+  // pour un monument récent, la photo « d'avant » est celle du chantier
+  document.querySelector('.periodes [data-p="autrefois"]').textContent = galerie.find((p) => p.onglet)?.onglet || 'Autrefois';
+  $('vignettes').innerHTML = galerie.length > 1
+    ? galerie.map((p, k) => `<button aria-label="Photo ${k + 1} : ${echap(p.legende)}"><img src="${p.mini}" alt=""></button>`).join('')
+    : '';
+  $('photo-a').removeAttribute('src'); $('photo-b').removeAttribute('src');
+  $('photo-a').classList.remove('cache'); $('photo-b').classList.add('cache'); calque = 0;
+  if (galerie.length) {
+    $('photo-a').src = galerie[0].src; $('photo-a').alt = galerie[0].legende;
+    $('photo-a').classList.toggle('document', galerie[0].periode === 'autrefois');
+    afficherPhotoInfos(0);
+  }
+
   fiche.hidden = false;
+  fiche.querySelector('.fiche-defile').scrollTop = 0;
+  // relance l'animation de déploiement même si la fiche était déjà ouverte
+  fiche.style.animation = 'none'; void fiche.offsetWidth; fiche.style.animation = '';
   document.body.classList.add('fiche-ouverte');
   reperes.get(actif)?.classList.remove('actif');
   reperes.get(id)?.classList.add('actif');
@@ -190,9 +266,29 @@ function ouvrir(id) {
   map.flyTo({
     center: [m.at[1], m.at[0]], zoom: mobile ? 16.4 : 17, pitch: 62,
     bearing: map.getBearing() + 25, duration: 2200, essential: true,
-    padding: mobile ? { bottom: innerHeight * 0.45, top: 110 } : { right: 380, left: 320 },
+    padding: mobile ? { bottom: innerHeight * 0.66, top: 70 } : { right: 440, left: 320 },
   });
 }
+// met à jour légende, crédits, onglets et vignettes sans changer l'image (première ouverture)
+function afficherPhotoInfos(i) {
+  const ph = galerie[i]; indexPhoto = i;
+  $('photo-legende').textContent = ph.legende;
+  $('photo-credit').innerHTML = `${echap(ph.auteur)} · ${echap(ph.licence)} · <a href="${ph.source}" target="_blank" rel="noopener">Wikimedia Commons ↗</a>`;
+  for (const btn of document.querySelectorAll('.periodes button')) btn.setAttribute('aria-selected', btn.dataset.p === ph.periode);
+  document.querySelectorAll('#vignettes button').forEach((v, k) => v.classList.toggle('actif', k === i));
+}
+
+document.querySelector('.periodes').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  const k = galerie.findIndex((p) => p.periode === b.dataset.p);
+  if (k >= 0 && k !== indexPhoto) afficherPhoto(k);
+});
+$('vignettes').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  const k = [...$('vignettes').children].indexOf(b);
+  if (k !== indexPhoto) afficherPhoto(k);
+});
+
 function fermer() {
   fiche.hidden = true;
   document.body.classList.remove('fiche-ouverte');
@@ -200,8 +296,30 @@ function fermer() {
   actif = null;
   map.easeTo({ padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: 600 });
 }
-document.getElementById('fiche-fermer').addEventListener('click', fermer);
-addEventListener('keydown', (e) => { if (e.key === 'Escape' && !fiche.hidden) fermer(); });
+$('fiche-fermer').addEventListener('click', fermer);
+
+// ---------- visionneuse plein écran ----------
+const visionneuse = $('visionneuse');
+function agrandir() {
+  const ph = galerie[indexPhoto]; if (!ph) return;
+  $('visionneuse-img').src = ph.src; $('visionneuse-img').alt = ph.legende;
+  $('visionneuse-legende').innerHTML = `${echap(ph.legende)}<span class="credit">${echap(ph.auteur)} · ${echap(ph.licence)} · <a href="${ph.source}" target="_blank" rel="noopener">Wikimedia Commons ↗</a></span>`;
+  visionneuse.hidden = false;
+  $('visionneuse-fermer').focus();
+}
+$('agrandir').addEventListener('click', agrandir);
+$('photo-a').addEventListener('click', agrandir);
+$('photo-b').addEventListener('click', agrandir);
+$('visionneuse-fermer').addEventListener('click', () => { visionneuse.hidden = true; });
+visionneuse.addEventListener('click', (e) => { if (e.target === visionneuse) visionneuse.hidden = true; });
+addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { if (!visionneuse.hidden) visionneuse.hidden = true; else if (!fiche.hidden) fermer(); }
+  if (!fiche.hidden && galerie.length > 1 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+    const k = (indexPhoto + (e.key === 'ArrowRight' ? 1 : -1) + galerie.length) % galerie.length;
+    afficherPhoto(k);
+    if (!visionneuse.hidden) agrandir();
+  }
+});
 
 // ---------- outils ----------
 let tour = null;

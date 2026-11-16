@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vendor/maplibre-gl.css">
-  <link rel="stylesheet" href="css/app.css?v=8">
+  <link rel="stylesheet" href="css/app.css?v=12">
 </head>
 <body>
   <div id="map" aria-label="Carte 3D du centre historique de Bordeaux"></div>
@@ -23,14 +23,39 @@
     <p class="legende-aide">Touchez une époque pour l'isoler.</p>
   </header>
 
-  <aside class="card fiche" id="fiche" hidden aria-live="polite">
+  <aside class="card fiche" id="fiche" hidden role="dialog" aria-labelledby="fiche-nom">
     <button class="fermer" id="fiche-fermer" aria-label="Fermer la fiche">×</button>
-    <p class="fiche-epoque" id="fiche-epoque"></p>
-    <h2 id="fiche-nom"></h2>
-    <p class="fiche-dates" id="fiche-dates"></p>
-    <p class="fiche-texte" id="fiche-texte"></p>
-    <p class="fiche-liens" id="fiche-liens"></p>
+    <div class="fiche-defile">
+      <figure class="galerie" id="galerie">
+        <div class="photo-cadre">
+          <img id="photo-a" alt="">
+          <img id="photo-b" alt="" class="cache">
+          <div class="periodes" role="tablist" aria-label="Époque de la photo">
+            <button role="tab" data-p="autrefois" aria-selected="true">Autrefois</button>
+            <button role="tab" data-p="aujourdhui" aria-selected="false">Aujourd'hui</button>
+          </div>
+          <button class="agrandir" id="agrandir" aria-label="Voir la photo en grand" title="Voir en grand">⤢</button>
+        </div>
+        <figcaption><span class="legende-photo" id="photo-legende"></span><span class="credit" id="photo-credit"></span></figcaption>
+        <div class="vignettes" id="vignettes"></div>
+      </figure>
+      <div class="fiche-corps">
+        <p class="fiche-epoque" id="fiche-epoque"></p>
+        <h2 id="fiche-nom"></h2>
+        <p class="fiche-dates" id="fiche-dates"></p>
+        <p class="fiche-texte" id="fiche-texte"></p>
+        <p class="fiche-liens" id="fiche-liens"></p>
+      </div>
+    </div>
   </aside>
+
+  <div class="apercu" id="apercu" hidden aria-hidden="true"></div>
+
+  <div class="visionneuse" id="visionneuse" hidden role="dialog" aria-label="Photo en grand">
+    <button class="fermer" id="visionneuse-fermer" aria-label="Fermer">×</button>
+    <img id="visionneuse-img" alt="">
+    <p id="visionneuse-legende"></p>
+  </div>
 
   <div class="outils" role="toolbar" aria-label="Vue">
     <button id="btn-tour" title="Faire tourner la vue" aria-pressed="false">⟳</button>
@@ -41,6 +66,6 @@
   <p class="credits">Bâtiments © IGN BD TOPO · Monuments et arbres © contributeurs OpenStreetMap · Prototype</p>
 
   <script src="vendor/maplibre-gl.js"></script>
-  <script type="module" src="js/app.js?v=8"></script>
+  <script type="module" src="js/app.js?v=12"></script>
 </body>
 </html>

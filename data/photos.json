@@ -1,0 +1,424 @@
+{
+ "gallien": [
+  {
+   "src": "img/monuments/gallien-1.jpg",
+   "mini": "img/monuments/gallien-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "L'amphithéâtre reconstitué, gravure de Claude Chastillon publiée en 1641",
+   "auteur": "Chastillon, Claude de (1559?-1616?). Dessinateur",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:L%27Amphitheastre_dit_le_palais_de_Gaillian,_pr%C3%A8s_la_ville_de_Bordeaux_-_Par_C._Chastillon_-_btv1b55005010t.jpg"
+  },
+  {
+   "src": "img/monuments/gallien-2.jpg",
+   "mini": "img/monuments/gallien-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "Les ruines vers 1900, carte postale",
+   "auteur": "Neurdein (ND), circa 1900-1910",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux-les-ruines-du-Palais-Gallien_10.jpg"
+  },
+  {
+   "src": "img/monuments/gallien-3.jpg",
+   "mini": "img/monuments/gallien-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "Les ruines aujourd’hui",
+   "auteur": "Frédéric Rodrigo",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Palais_Galien-panoramique.jpg"
+  }
+ ],
+ "seurin": [
+  {
+   "src": "img/monuments/seurin-1.jpg",
+   "mini": "img/monuments/seurin-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La façade vers 1900, carte postale",
+   "auteur": "Auteur inconnu",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Basilique_Saint-Seurin_1.jpg"
+  },
+  {
+   "src": "img/monuments/seurin-2.jpg",
+   "mini": "img/monuments/seurin-2-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La façade aujourd’hui",
+   "auteur": "Ludovic Courtès",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_fa%C3%A7ade_%C3%A9glise_Saint-Seurin_a.jpg"
+  }
+ ],
+ "cathedrale": [
+  {
+   "src": "img/monuments/cathedrale-1.jpg",
+   "mini": "img/monuments/cathedrale-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La cathédrale vers 1900, carte postale",
+   "auteur": "Dany - éditeur Renaud & Buzaud à Bordeaux",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux-St_Andr%C3%A9-cp-0003.jpg"
+  },
+  {
+   "src": "img/monuments/cathedrale-2.jpg",
+   "mini": "img/monuments/cathedrale-2-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La cathédrale aujourd’hui",
+   "auteur": "Chabe01",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Cath%C3%A9drale_St_Andr%C3%A9_Bordeaux_3.jpg"
+  }
+ ],
+ "peyberland": [
+  {
+   "src": "img/monuments/peyberland-1.jpg",
+   "mini": "img/monuments/peyberland-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La tour et la cathédrale vers 1900",
+   "auteur": "Charles Chambon",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Charles_Chambon_-_Bordeaux_Tour_Pey_Berland.jpg"
+  },
+  {
+   "src": "img/monuments/peyberland-2.jpg",
+   "mini": "img/monuments/peyberland-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La tour vers 1900, carte postale",
+   "auteur": "Bloc Frères (BR) circa 1900 - 1910",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_la_tour_Pey-Berland_1.jpg"
+  },
+  {
+   "src": "img/monuments/peyberland-3.jpg",
+   "mini": "img/monuments/peyberland-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La tour aujourd’hui",
+   "auteur": "Olivier Aumage",
+   "licence": "CC BY-SA 2.0 fr",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Tour_Pey_Berland_3.jpg"
+  }
+ ],
+ "grossecloche": [
+  {
+   "src": "img/monuments/grossecloche-1.jpg",
+   "mini": "img/monuments/grossecloche-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "Un dirigeable survole la Grosse Cloche, vers 1920",
+   "auteur": "Marcel Delboy",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Grosse_Cloche_et_un_dirigeable.jpg"
+  },
+  {
+   "src": "img/monuments/grossecloche-2.jpg",
+   "mini": "img/monuments/grossecloche-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La Grosse Cloche vers 1900, carte postale",
+   "auteur": "Bloc Frères circa 1900 - 1910",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_la_grosse-cloche_2.jpg"
+  },
+  {
+   "src": "img/monuments/grossecloche-3.jpg",
+   "mini": "img/monuments/grossecloche-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La Grosse Cloche aujourd’hui",
+   "auteur": "Joancharmant",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Grosse_cloche_de_Bordeaux.jpg"
+  }
+ ],
+ "cailhau": [
+  {
+   "src": "img/monuments/cailhau-1.jpg",
+   "mini": "img/monuments/cailhau-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La porte en 1907",
+   "auteur": "Sigurd Curman",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Porte_Cailhau,_Bordeaux_-_TEK_-_TEKA0116588.tif"
+  },
+  {
+   "src": "img/monuments/cailhau-2.jpg",
+   "mini": "img/monuments/cailhau-2-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La porte aujourd’hui",
+   "auteur": "Alexandre Duret-Lutz",
+   "licence": "CC BY-SA 2.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Porte_Cailhau.jpg"
+  }
+ ],
+ "saintmichel": [
+  {
+   "src": "img/monuments/saintmichel-1.jpg",
+   "mini": "img/monuments/saintmichel-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La basilique et sa tour privée de flèche, lithographie de 1834",
+   "auteur": "Auguste Victor Deroy / Nicolas-Marie-Joseph Chapuy",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Lithographie_de_l%27%C3%A9glise_Saint-Michel_de_Bordeaux,_en_1834.jpg"
+  },
+  {
+   "src": "img/monuments/saintmichel-2.jpg",
+   "mini": "img/monuments/saintmichel-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La flèche sous les échafaudages, photographie de Charles Marville, milieu du XIXᵉ siècle",
+   "auteur": "Marville, Charles",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Marville,_Charles_-_Eine_Kirche_mit_Bauger%C3%BCst_in_S%C3%BCdfrankreich,_Bordeaux_(Zeno_Fotografie).jpg"
+  },
+  {
+   "src": "img/monuments/saintmichel-3.jpg",
+   "mini": "img/monuments/saintmichel-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La basilique aujourd’hui",
+   "auteur": "Orikrin1998",
+   "licence": "CC BY 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:10-Bordeaux_-_basilique_Saint-Michel_(3).JPG"
+  }
+ ],
+ "saintecroix": [
+  {
+   "src": "img/monuments/saintecroix-1.jpg",
+   "mini": "img/monuments/saintecroix-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La façade sur un daguerréotype de 1841",
+   "auteur": "Noël Paymal Lerebours",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Sainte-Croix_BDX_Daguerrotype.jpg"
+  },
+  {
+   "src": "img/monuments/saintecroix-2.jpg",
+   "mini": "img/monuments/saintecroix-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La façade en 1886",
+   "auteur": "Auteur inconnu",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Abbatiale_Sainte-Croix_de_Bordeaux_-_Hallwylska_museet_-_107467.tif"
+  },
+  {
+   "src": "img/monuments/saintecroix-3.jpg",
+   "mini": "img/monuments/saintecroix-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La façade aujourd’hui",
+   "auteur": "Chris06",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:2023_Abbatiale_Sainte_Croix_(Bordeaux)_(01).jpg"
+  }
+ ],
+ "bourse": [
+  {
+   "src": "img/monuments/bourse-1.jpg",
+   "mini": "img/monuments/bourse-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La place royale vue du fleuve, dessin d’Alexandre Antoine Marolles, 1737",
+   "auteur": "Alexandre Antoine Marolles",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Vue_en_perspective_de_la_place_royale_de_Bordeaux,_dessin_%C3%A0_l%E2%80%99encre_par_Alexandre_Antoine_Marolles,_1737._BNF.png"
+  },
+  {
+   "src": "img/monuments/bourse-2.jpg",
+   "mini": "img/monuments/bourse-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La place et la fontaine des Trois Grâces vers 1900, carte postale",
+   "auteur": "Auteur inconnu",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Place_de_la_Bourse_2.jpg"
+  },
+  {
+   "src": "img/monuments/bourse-3.jpg",
+   "mini": "img/monuments/bourse-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La place et le Miroir d’eau aujourd’hui",
+   "auteur": "Patrick Despoix",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:139_-_Place_de_la_Bourse_et_le_miroir_d%27eau_-_Bordeaux.jpg"
+  }
+ ],
+ "grandtheatre": [
+  {
+   "src": "img/monuments/grandtheatre-1.jpg",
+   "mini": "img/monuments/grandtheatre-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La façade dessinée par Victor Louis, gravure d’après ses planches",
+   "auteur": "Henri Prudent / Paul Guadet / Victor Louis / Claude-René-Gabriel Poulleau",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Les_Salles_de_spectacle_construites_par_Victor_Louis_1903_pl01_Th%C3%A9%C3%A2tre_de_Bordeaux,_Vue_perspective_de_la_fa%C3%A7ade.jpg"
+  },
+  {
+   "src": "img/monuments/grandtheatre-2.jpg",
+   "mini": "img/monuments/grandtheatre-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "Le Grand Théâtre vers 1900, carte postale",
+   "auteur": "Panajou frères",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Le_Grand_Th%C3%A9%C3%A2tre.jpg"
+  },
+  {
+   "src": "img/monuments/grandtheatre-3.jpg",
+   "mini": "img/monuments/grandtheatre-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "Le Grand Théâtre aujourd’hui",
+   "auteur": "Chrisus",
+   "licence": "CC BY-SA 2.5",
+   "source": "https://commons.wikimedia.org/wiki/File:Grand_Theatre_Bordeaux.JPG"
+  }
+ ],
+ "rohan": [
+  {
+   "src": "img/monuments/rohan-1.jpg",
+   "mini": "img/monuments/rohan-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "L’hôtel de ville, ancien palais Rohan, en 1845",
+   "auteur": "Auteur inconnu",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_H%C3%B4tel_de_ville_(1845).jpg"
+  },
+  {
+   "src": "img/monuments/rohan-2.jpg",
+   "mini": "img/monuments/rohan-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "Le palais et les tramways vers 1908, carte postale",
+   "auteur": "Bloc Frères",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:BR_284_-_48_-_BORDEAUX_-_L%27Hotel-de-Ville.jpg"
+  },
+  {
+   "src": "img/monuments/rohan-3.jpg",
+   "mini": "img/monuments/rohan-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "Le palais aujourd’hui",
+   "auteur": "W. Bulach",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:00_2676_H%C3%B4tel_de_ville_de_Bordeaux_(Palais_Rohan).jpg"
+  }
+ ],
+ "aquitaine": [
+  {
+   "src": "img/monuments/aquitaine-1.jpg",
+   "mini": "img/monuments/aquitaine-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La porte et la place vers 1910, carte postale",
+   "auteur": "Auteur inconnu",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Porte_d%27Aquitaine_20.jpg"
+  },
+  {
+   "src": "img/monuments/aquitaine-2.jpg",
+   "mini": "img/monuments/aquitaine-2-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La porte aujourd’hui, place de la Victoire",
+   "auteur": "Patrick Despoix",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:022_-_Place_de_la_Victoire_-_Bordeaux.jpg"
+  }
+ ],
+ "bourgogne": [
+  {
+   "src": "img/monuments/bourgogne-1.jpg",
+   "mini": "img/monuments/bourgogne-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La porte et la place vers 1905, carte postale",
+   "auteur": "UnknownUnknown",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Porte_de_Bourgogne_vers_1905.jpg"
+  },
+  {
+   "src": "img/monuments/bourgogne-2.jpg",
+   "mini": "img/monuments/bourgogne-2-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La porte aujourd’hui",
+   "auteur": "Aubry Françon",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Porte_de_Bourgogne_Vue_n%C2%B03.jpg"
+  }
+ ],
+ "pontdepierre": [
+  {
+   "src": "img/monuments/pontdepierre-1.jpg",
+   "mini": "img/monuments/pontdepierre-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La ville et le pont de pierre en 1830",
+   "auteur": "Ambroise Louis Garneray",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Vue_de_la_ville_et_du_pont_de_Pierre_-_1830.JPG"
+  },
+  {
+   "src": "img/monuments/pontdepierre-2.jpg",
+   "mini": "img/monuments/pontdepierre-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La Garonne et le pont vers 1900, carte postale",
+   "auteur": "Marcel Delboy",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Garonne_et_pont_de_pierre.jpg"
+  },
+  {
+   "src": "img/monuments/pontdepierre-3.jpg",
+   "mini": "img/monuments/pontdepierre-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "Le pont aujourd’hui, vu de la flèche Saint-Michel",
+   "auteur": "Guallendra",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Pont_de_Pierre_vu_depuis_la_fl%C3%A8che_Saint_Michel_V2.jpg"
+  }
+ ],
+ "girondins": [
+  {
+   "src": "img/monuments/girondins-1.jpg",
+   "mini": "img/monuments/girondins-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "La colonne au début du XXᵉ siècle, photochrome",
+   "auteur": "Photoglob Co., publisher",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux._La_Colonne_des_Girondins_LCCN2017659773.jpg"
+  },
+  {
+   "src": "img/monuments/girondins-2.jpg",
+   "mini": "img/monuments/girondins-2-mini.jpg",
+   "periode": "autrefois",
+   "legende": "Les chevaux de la fontaine vers 1910, carte postale",
+   "auteur": "Auteur inconnu",
+   "licence": "Public domain",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Monument_des_Girondins.jpg"
+  },
+  {
+   "src": "img/monuments/girondins-3.jpg",
+   "mini": "img/monuments/girondins-3-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "Le monument aujourd’hui",
+   "auteur": "Jibi44",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Le_monument_aux_Girondins_(Bordeaux).JPG"
+  }
+ ],
+ "citeduvin": [
+  {
+   "src": "img/monuments/citeduvin-1.jpg",
+   "mini": "img/monuments/citeduvin-1-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "La Cité du Vin au bord de la Garonne",
+   "auteur": "Chris06",
+   "licence": "CC BY-SA 4.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_Quai_de_Bacalan_(1).jpg"
+  }
+ ],
+ "chaban": [
+  {
+   "src": "img/monuments/chaban-1.jpg",
+   "mini": "img/monuments/chaban-1-mini.jpg",
+   "periode": "autrefois",
+   "legende": "Le pont en construction, été 2012",
+   "auteur": "Grand Parc - Bordeaux, France (Flickr)",
+   "licence": "CC BY-SA 2.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Bordeaux_-_Pont_Chaban_Delmas_en_construction_-_Panorama_(7802777516).jpg",
+   "onglet": "Le chantier"
+  },
+  {
+   "src": "img/monuments/chaban-2.jpg",
+   "mini": "img/monuments/chaban-2-mini.jpg",
+   "periode": "aujourdhui",
+   "legende": "Le tablier levé pour laisser passer un navire",
+   "auteur": "Prométhée33",
+   "licence": "CC BY-SA 3.0",
+   "source": "https://commons.wikimedia.org/wiki/File:Pont_Jacques-Chaban-Delmas_lev%C3%A9_03.JPG"
+  }
+ ]
+}

@@ -1,11 +1,17 @@
 :root {
   --papier: #f2eee5;
-  --encre: #22252b;
-  --encre-douce: #5d6168;
-  --filet: #ddd6c8;
-  --carte: rgba(255, 253, 249, 0.94);
+  --encre: #2a2119;
+  --encre-douce: #6b5a48;
+  /* parchemin : cartouches et fiches, pour trancher avec la ville blanche */
+  --parchemin: #f3e8d4;
+  --parchemin-2: #e9d9bc;
+  --parchemin-3: #dcc7a1;
+  --brun: #3b2a1d;
+  --brun-doux: #74604b;
+  --brun-cadre: #2c1f15;
+  --filet: #d6c2a0;
   --bordeaux: #7a2340;
-  --ombre: 0 10px 30px rgba(40, 32, 20, 0.14), 0 1px 3px rgba(40, 32, 20, 0.12);
+  --ombre: 0 12px 34px rgba(50, 32, 14, 0.18), 0 1px 3px rgba(50, 32, 14, 0.14);
   --serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
   --sans: Inter, -apple-system, 'Segoe UI', Roboto, sans-serif;
 }
@@ -15,31 +21,33 @@ html, body { margin: 0; height: 100%; background: var(--papier); color: var(--en
 body { overflow: hidden; -webkit-font-smoothing: antialiased; }
 #map { position: absolute; inset: 0; background: var(--papier); }
 button { font: inherit; color: inherit; cursor: pointer; }
+[hidden] { display: none !important; }
 
 .card {
   position: absolute; z-index: 2;
-  background: var(--carte); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(170deg, var(--parchemin) 0%, var(--parchemin-2) 100%);
   border: 1px solid var(--filet); border-radius: 14px; box-shadow: var(--ombre);
+  color: var(--brun);
 }
 
 /* ---------- titre et légende ---------- */
 .titre { top: 18px; left: 18px; width: 300px; padding: 18px 20px 14px; }
 .kicker { margin: 0; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--bordeaux); font-weight: 600; }
 .titre h1 { margin: 4px 0 2px; font-family: var(--serif); font-weight: 600; font-size: 38px; line-height: 1; letter-spacing: -0.01em; }
-.sous-titre { margin: 0 0 14px; font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--encre-douce); }
+.sous-titre { margin: 0 0 14px; font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--brun-doux); }
 .legende { display: flex; flex-direction: column; gap: 2px; border-top: 1px solid var(--filet); padding-top: 10px; }
 .legende button {
   display: flex; align-items: center; gap: 10px; width: 100%;
   padding: 5px 6px; margin: 0 -6px; border: 0; border-radius: 7px; background: none;
   font-size: 13.5px; text-align: left; transition: opacity .2s, background .2s;
 }
-.legende button:hover { background: rgba(0, 0, 0, 0.04); }
+.legende button:hover { background: rgba(80, 50, 20, 0.07); }
 .legende button.eteint { opacity: 0.35; }
 .legende .pastille { flex: none; width: 13px; height: 13px; border-radius: 3px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.18); }
-.legende .nb { margin-left: auto; font-size: 11.5px; color: var(--encre-douce); font-variant-numeric: tabular-nums; }
+.legende .nb { margin-left: auto; font-size: 11.5px; color: var(--brun-doux); font-variant-numeric: tabular-nums; }
 .legende .sep { height: 1px; background: var(--filet); margin: 6px 0; }
-.legende .info { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 12.5px; color: var(--encre-douce); }
-.legende-aide { margin: 8px 0 0; font-size: 11.5px; color: var(--encre-douce); }
+.legende .info { display: flex; align-items: center; gap: 10px; padding: 4px 0; font-size: 12.5px; color: var(--brun-doux); }
+.legende-aide { margin: 8px 0 0; font-size: 11.5px; color: var(--brun-doux); }
 
 /* ---------- repères des monuments ---------- */
 .repere { position: relative; width: 0; height: 0; cursor: pointer; }
@@ -58,36 +66,117 @@ button { font: inherit; color: inherit; cursor: pointer; }
   opacity: 0; transform: translateX(-4px); transition: opacity .2s, transform .2s; pointer-events: none;
 }
 .noms-visibles .repere .nom, .repere:hover .nom, .repere.actif .nom { opacity: 1; transform: none; }
-.repere:hover .tete, .repere.actif .tete { transform: scale(1.18); }
+.repere:hover .tete, .repere.actif .tete, .repere:focus-visible .tete { transform: scale(1.18); }
+.repere:focus-visible { outline: none; }
+.repere:focus-visible .tete { outline: 2px solid var(--brun); outline-offset: 2px; }
 .repere.estompe { opacity: 0.25; }
 .repere.hotel .tete { background: var(--encre); border-radius: 7px; font-size: 12px; }
 .repere.hotel .tige { background: linear-gradient(var(--encre), rgba(0,0,0,.25)); }
 
-/* ---------- fiche ---------- */
-.fiche { top: 18px; right: 18px; width: 340px; padding: 20px 22px 18px; }
-.fiche[hidden] { display: none; }
-.fermer { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 0; border-radius: 50%; background: rgba(0,0,0,.05); font-size: 20px; line-height: 1; }
-.fermer:hover { background: rgba(0,0,0,.1); }
+/* ---------- aperçu au survol ---------- */
+.apercu {
+  position: absolute; z-index: 4; width: 250px; pointer-events: none;
+  background: var(--parchemin); color: var(--brun);
+  border: 1px solid var(--filet); border-radius: 12px; box-shadow: var(--ombre);
+  transform: translate(-50%, calc(-100% - 14px));
+  animation: apparait .16s ease-out;
+}
+.apercu img { display: block; width: 100%; height: 118px; object-fit: cover; background: var(--parchemin-3); border-radius: 11px 11px 0 0; }
+.apercu .ap-corps { padding: 9px 12px 11px; }
+.apercu .ap-epoque { margin: 0; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; }
+.apercu .ap-nom { margin: 2px 0 3px; font-family: var(--serif); font-size: 19px; font-weight: 700; line-height: 1.1; }
+.apercu .ap-texte { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--brun-doux); }
+.apercu .ap-plus { margin: 6px 0 0; font-size: 11px; color: var(--bordeaux); font-weight: 600; }
+.apercu::after {
+  content: ''; position: absolute; left: 50%; bottom: -7px; width: 12px; height: 12px; margin-left: -6px;
+  background: var(--parchemin); border-right: 1px solid var(--filet); border-bottom: 1px solid var(--filet); transform: rotate(45deg);
+}
+@keyframes apparait { from { opacity: 0; margin-top: 6px; } to { opacity: 1; margin-top: 0; } }
+
+/* ---------- fiche (se déploie au clic) ---------- */
+.fiche {
+  top: 18px; right: 18px; width: 420px; max-height: calc(100% - 36px);
+  display: flex; flex-direction: column; overflow: hidden;
+  transform-origin: 100% 50%;
+  animation: deploie .38s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes deploie { from { opacity: 0; transform: translateX(28px) scale(.97); } to { opacity: 1; transform: none; } }
+.fiche-defile { overflow-y: auto; flex: 1; overscroll-behavior: contain; }
+.fermer {
+  position: absolute; z-index: 3; top: 12px; right: 12px; width: 34px; height: 34px; border: 0; border-radius: 50%;
+  background: rgba(30, 20, 12, .62); color: #f6ecd9; font-size: 21px; line-height: 1; backdrop-filter: blur(4px);
+}
+.fermer:hover { background: rgba(30, 20, 12, .82); }
+
+.galerie { margin: 0; background: var(--brun-cadre); color: #eadcc2; }
+.photo-cadre { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #1f160f; }
+.photo-cadre img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  transition: opacity .45s ease; cursor: zoom-in;
+}
+.photo-cadre img.cache { opacity: 0; }
+/* documents anciens (gravures, cartes postales) : montrés en entier, comme sous passe-partout */
+.photo-cadre img.document { object-fit: contain; padding: 14px 14px 56px; filter: drop-shadow(0 6px 14px rgba(0,0,0,.45)); }
+.periodes {
+  position: absolute; left: 12px; bottom: 12px; z-index: 2; display: flex; padding: 3px; gap: 2px;
+  background: rgba(30, 20, 12, .66); border-radius: 999px; backdrop-filter: blur(4px);
+}
+.periodes button {
+  border: 0; background: none; color: #e9dcc4; padding: 6px 13px; border-radius: 999px;
+  font-size: 12.5px; font-weight: 600; letter-spacing: .02em; transition: background .2s, color .2s;
+}
+.periodes button[aria-selected="true"] { background: var(--parchemin); color: var(--brun); }
+.periodes button:disabled { opacity: .35; cursor: default; }
+.agrandir {
+  position: absolute; right: 12px; bottom: 12px; z-index: 2; width: 34px; height: 34px; border: 0; border-radius: 50%;
+  background: rgba(30, 20, 12, .66); color: #f6ecd9; font-size: 15px; backdrop-filter: blur(4px);
+}
+.galerie figcaption { padding: 10px 16px 4px; font-size: 13px; line-height: 1.4; }
+.legende-photo { display: block; font-family: var(--serif); font-size: 16.5px; font-style: italic; color: #f3e6cf; }
+.credit { display: block; margin-top: 3px; font-size: 10.5px; color: #a8957a; }
+.credit a { color: #cdb894; }
+.vignettes { display: flex; gap: 6px; padding: 8px 16px 14px; overflow-x: auto; scrollbar-width: none; }
+.vignettes button {
+  flex: none; position: relative; width: 62px; height: 46px; padding: 0; border: 2px solid transparent; border-radius: 6px;
+  overflow: hidden; background: #1f160f; opacity: .6; transition: opacity .2s, border-color .2s;
+}
+.vignettes button:hover { opacity: .9; }
+.vignettes button.actif { opacity: 1; border-color: var(--parchemin-3); }
+.vignettes img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.fiche-corps { padding: 18px 22px 20px; }
 .fiche-epoque { display: inline-flex; align-items: center; gap: 7px; margin: 0; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; }
 .fiche-epoque::before { content: ''; width: 10px; height: 10px; border-radius: 2px; background: currentColor; }
-.fiche h2 { margin: 6px 0 2px; font-family: var(--serif); font-size: 30px; line-height: 1.05; font-weight: 600; padding-right: 20px; }
-.fiche-dates { margin: 0 0 12px; font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--encre-douce); }
-.fiche-texte { margin: 0; font-size: 14px; line-height: 1.6; }
-.fiche-liens { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--filet); font-size: 12.5px; color: var(--encre-douce); }
-.fiche-liens a { color: var(--bordeaux); font-weight: 600; text-decoration: none; }
-.fiche-liens a:hover { text-decoration: underline; }
+.fiche h2 { margin: 6px 0 2px; font-family: var(--serif); font-size: 32px; line-height: 1.05; font-weight: 600; color: var(--brun); }
+.fiche-dates { margin: 0 0 12px; font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--brun-doux); }
+.fiche-texte { margin: 0; font-size: 14.5px; line-height: 1.65; color: var(--brun); }
+.fiche-liens { margin: 16px 0 0; padding-top: 12px; border-top: 1px solid var(--filet); font-size: 12.5px; color: var(--brun-doux); }
+
+/* ---------- visionneuse plein écran ---------- */
+.visionneuse {
+  position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(24, 16, 10, .93); color: #eadcc2; animation: fondu .25s ease;
+}
+.visionneuse img { max-width: 100%; max-height: calc(100% - 100px); object-fit: contain; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.visionneuse p { max-width: 760px; margin: 14px 0 0; text-align: center; font-family: var(--serif); font-size: 18px; font-style: italic; }
+.visionneuse .credit { text-align: center; font-family: var(--sans); font-style: normal; font-size: 11.5px; }
+.visionneuse .fermer { position: absolute; top: 16px; right: 16px; }
+@keyframes fondu { from { opacity: 0; } to { opacity: 1; } }
 
 /* ---------- outils ---------- */
 .outils { position: absolute; z-index: 2; right: 18px; bottom: 150px; display: flex; flex-direction: column; gap: 8px; }
 .outils button {
   width: 42px; height: 42px; border-radius: 12px; border: 1px solid var(--filet);
-  background: var(--carte); box-shadow: var(--ombre); font-size: 17px; font-weight: 600;
+  background: var(--parchemin); color: var(--brun); box-shadow: var(--ombre); font-size: 17px; font-weight: 600;
 }
-.outils button:hover { background: #fff; }
-.outils button[aria-pressed="true"] { background: var(--encre); color: #fff; border-color: var(--encre); }
+.outils button:hover { background: #fbf3e4; }
+.outils button[aria-pressed="true"] { background: var(--brun); color: var(--parchemin); border-color: var(--brun); }
+body.fiche-ouverte .outils { right: 456px; }
 .credits { position: absolute; z-index: 1; left: 18px; bottom: 8px; margin: 0; font-size: 10.5px; color: var(--encre-douce); }
 
-.maplibregl-popup-content { font-family: var(--sans); border-radius: 10px; padding: 10px 14px; box-shadow: var(--ombre); font-size: 13px; line-height: 1.45; }
+.maplibregl-popup-content { font-family: var(--sans); border-radius: 10px; padding: 10px 14px; box-shadow: var(--ombre); font-size: 13px; line-height: 1.45; background: var(--parchemin); color: var(--brun); }
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip { border-top-color: var(--parchemin); }
+.maplibregl-popup-anchor-top .maplibregl-popup-tip { border-bottom-color: var(--parchemin); }
 .maplibregl-popup-content strong { font-family: var(--serif); font-size: 16px; }
 .maplibregl-popup-content a { color: var(--bordeaux); font-weight: 600; }
 
@@ -99,10 +188,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .legende { flex-direction: row; flex-wrap: nowrap; overflow-x: auto; gap: 6px; padding-bottom: 2px; scrollbar-width: none; }
   .legende button { width: auto; flex: none; margin: 0; padding: 5px 9px; border: 1px solid var(--filet); border-radius: 999px; font-size: 12.5px; white-space: nowrap; }
   .legende .nb, .legende .sep, .legende .info, .legende-aide { display: none; }
-  .fiche { top: auto; left: 10px; right: 10px; bottom: 10px; width: auto; max-height: 52vh; overflow-y: auto; padding: 16px 18px 14px; }
-  .fiche h2 { font-size: 26px; }
+  .fiche { top: auto; left: 0; right: 0; bottom: 0; width: auto; max-height: 68vh; border-radius: 18px 18px 0 0; transform-origin: 50% 100%; animation-name: monte; }
+  .photo-cadre { aspect-ratio: 16 / 10; }
+  .fiche h2 { font-size: 27px; }
+  .fiche-corps { padding: 14px 18px 22px; }
   .outils { right: 10px; bottom: 140px; }
   body.fiche-ouverte .outils { display: none; }
-  body.fiche-ouverte .titre .kicker, body.fiche-ouverte .titre .sous-titre { display: none; }
+  body.fiche-ouverte .titre .kicker, body.fiche-ouverte .titre .sous-titre, body.fiche-ouverte .titre .legende { display: none; }
   .credits { left: 10px; right: 60px; font-size: 9.5px; }
+  .apercu { display: none !important; }
 }
+@keyframes monte { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: none; } }
