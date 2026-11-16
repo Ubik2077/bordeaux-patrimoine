@@ -14,8 +14,9 @@ const json = (u) => fetch(`${u}?v=${DONNEES}`).then((r) => r.json());
 // les gros fichiers partent tout de suite, pendant que la carte s'initialise
 const volumes = Promise.all([json('data/sol.json'), json('data/batiments.json'), json('data/arbres.json')])
   .then(([sol, bati, arbres]) => ({ sol: deplier(sol), bati: deplier(bati), arbres: polygonesAutour(arbres, 3.3, 6) }));
-const [zone, meta, photos] = await Promise.all([
+const [zone, meta, photos, marches] = await Promise.all([
   json('data/zone.json'), json('data/monuments.json'), json('data/photos.json').catch(() => ({})),
+  json('data/promenades.json').catch(() => ({ promenades: [], depuisHotel: {} })),
 ]);
 const { epoques, monuments, hotel } = meta;
 const parId = Object.fromEntries(monuments.map((m) => [m.id, m]));
@@ -98,6 +99,13 @@ map.on('load', async () => {
       'fill-extrusion-opacity': 1,
     },
   });
+
+  // tracé de la promenade choisie : au-dessus des bâtiments pour rester lisible en 3D
+  map.addSource('promenade', { type: 'geojson', data: ligne([]) });
+  map.addLayer({ id: 'promenade-halo', type: 'line', source: 'promenade', layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#fffaf0', 'line-width': ['interpolate', ['linear'], ['zoom'], 13, 6, 17, 11], 'line-opacity': 0.9 } });
+  map.addLayer({ id: 'promenade', type: 'line', source: 'promenade', layout: { 'line-cap': 'round', 'line-join': 'round' },
+    paint: { 'line-color': '#7a2340', 'line-width': ['interpolate', ['linear'], ['zoom'], 13, 3, 17, 5.5] } });
 
   // clic sur un volume : fiche du monument phare, ou petite bulle pour un bâtiment protégé
   map.on('click', 'bati', (ev) => {
@@ -238,7 +246,7 @@ function ouvrir(id) {
   $('fiche-nom').textContent = m.name;
   $('fiche-dates').textContent = m.dates;
   $('fiche-texte').textContent = m.texte;
-  $('fiche-liens').textContent = 'Bientôt : itinéraire depuis l’hôtel, horaires et tarifs de visite.';
+  lienMarche(id);
 
   // galerie : d'abord autrefois (du plus ancien au plus récent), puis aujourd'hui
   galerie = photosDe(id);
@@ -272,7 +280,7 @@ function ouvrir(id) {
   map.flyTo({
     center: [m.at[1], m.at[0]], zoom: mobile ? 16.4 : 17, pitch: 62,
     bearing: map.getBearing() + 25, duration: 2200, essential: true,
-    padding: mobile ? { bottom: innerHeight * 0.66, top: 70 } : { right: 440, left: 320 },
+    padding: mobile ? { bottom: innerHeight * 0.66, top: 70 } : { right: 440, left: panneau.hidden ? 320 : 400 },
   });
 }
 // met à jour légende, crédits, onglets et vignettes sans changer l'image (première ouverture)
@@ -319,7 +327,11 @@ $('photo-b').addEventListener('click', agrandir);
 $('visionneuse-fermer').addEventListener('click', () => { visionneuse.hidden = true; });
 visionneuse.addEventListener('click', (e) => { if (e.target === visionneuse) visionneuse.hidden = true; });
 addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') { if (!visionneuse.hidden) visionneuse.hidden = true; else if (!fiche.hidden) fermer(); }
+  if (e.key === 'Escape') {
+    if (!visionneuse.hidden) visionneuse.hidden = true;
+    else if (!fiche.hidden) fermer();
+    else if (!panneau.hidden) fermerPromenades();
+  }
   if (!fiche.hidden && galerie.length > 1 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
     const k = (indexPhoto + (e.key === 'ArrowRight' ? 1 : -1) + galerie.length) % galerie.length;
     afficherPhoto(k);
@@ -345,8 +357,139 @@ document.getElementById('btn-3d').addEventListener('click', (e) => {
 });
 document.getElementById('btn-accueil').addEventListener('click', () => {
   if (!fiche.hidden) fermer();
-  map.flyTo({ ...vueAccueil(), duration: 1600 });
+  map.flyTo({ ...vueAccueil(), padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: 1600 });
   document.getElementById('btn-3d').textContent = '2D';
+});
+
+// ---------- promenades à pied depuis l'hôtel ----------
+const panneau = $('promenades'), contenu = $('pr-contenu');
+const promenades = marches.promenades;
+let promenade = null, dessin = null;
+const ligne = (coords) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords } });
+const km = (m) => (m / 1000).toLocaleString('fr-FR', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' km';
+const duree = (min) => {
+  if (min < 60) return `${min} min`;
+  const r = Math.round(min / 5) * 5;
+  return `${Math.floor(r / 60)} h ${String(r % 60).padStart(2, '0')}`;
+};
+const nomLieu = (id) => (id === 'hotel' ? 'Votre hôtel' : parId[id].name);
+
+function listePromenades() {
+  contenu.innerHTML =
+    `<div class="pr-tete"><p class="kicker">Depuis votre hôtel</p><h2>Promenades à pied</h2>` +
+    `<p class="pr-sous">Trois parcours pour découvrir le centre historique, sur les rues réelles. Temps de marche sans les visites.</p></div>` +
+    `<ul class="pr-liste">` + promenades.map((p) =>
+      `<li><button data-pr="${p.id}">` +
+      `<span class="pr-nom">${echap(p.nom)}</span>` +
+      `<span class="pr-meta">${p.boucle ? 'Boucle' : 'Aller simple'} · ${km(p.distance)} · ${duree(p.marche)}</span>` +
+      `<span class="pr-intro">${echap(p.intro)}</span>` +
+      `<span class="pr-pastilles">${p.etapes.filter((e) => e.m !== 'hotel').map((e) => `<i style="background:${epoques[parId[e.m].epoque].color}" title="${echap(parId[e.m].name)}"></i>`).join('')}` +
+      `<b>${p.etapes.filter((e) => e.m !== 'hotel').length} étapes</b></span>` +
+      `</button></li>`).join('') + `</ul>`;
+}
+
+function detailPromenade(p) {
+  let n = 0;
+  const etapes = p.etapes.map((e) => {
+    const hotelFin = e.m === 'hotel';
+    const ep = hotelFin ? null : epoques[parId[e.m].epoque];
+    const marche = `<li class="pr-marche"><span>${e.min} min · ${e.depuis < 1000 ? e.depuis + ' m' : km(e.depuis)}</span></li>`;
+    const lieu = hotelFin
+      ? `<li class="pr-lieu hotel"><span class="pt">H</span><div><strong>Retour à l'hôtel</strong></div></li>`
+      : `<li class="pr-lieu"><span class="pt" style="--c:${ep.color}">${++n}</span>` +
+        `<button data-m="${e.m}"><strong>${echap(parId[e.m].name)}</strong><span>${echap(parId[e.m].apercu || '')}</span></button></li>`;
+    return marche + lieu;
+  }).join('');
+  contenu.innerHTML =
+    `<button class="pr-retour" data-retour>← Toutes les promenades</button>` +
+    `<div class="pr-tete"><p class="kicker">${p.boucle ? 'Boucle' : 'Aller simple'} depuis l'hôtel</p><h2>${echap(p.nom)}</h2>` +
+    `<p class="pr-chiffres"><span><b>${km(p.distance)}</b> à pied</span><span><b>${duree(p.marche)}</b> de marche</span><span><b>${n}</b> étapes</span></p>` +
+    `<p class="pr-sous">${echap(p.intro)}</p></div>` +
+    `<ol class="pr-etapes"><li class="pr-lieu hotel"><span class="pt">H</span><div><strong>Votre hôtel</strong><span>Départ</span></div></li>${etapes}</ol>` +
+    `<p class="pr-fin">${echap(p.fin)}</p>`;
+}
+
+function ouvrirPromenades() {
+  if (!promenade) listePromenades();
+  panneau.hidden = false;
+  document.body.classList.add('promenades-ouvertes');
+  $('btn-promenades').setAttribute('aria-expanded', 'true');
+  panneau.style.animation = 'none'; void panneau.offsetWidth; panneau.style.animation = '';
+  contenu.scrollTop = 0;
+}
+function fermerPromenades() {
+  panneau.hidden = true;
+  document.body.classList.remove('promenades-ouvertes');
+  $('btn-promenades').setAttribute('aria-expanded', 'false');
+  if (promenade) map.easeTo({ padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: 600 });
+  choisirPromenade(null);
+}
+
+function choisirPromenade(id) {
+  promenade = promenades.find((p) => p.id === id) || null;
+  cancelAnimationFrame(dessin);
+  // repères : numéro d'étape sur ceux du parcours, les autres s'effacent
+  document.body.classList.toggle('en-promenade', !!promenade);
+  for (const [mid, el] of reperes) {
+    const k = promenade ? promenade.etapes.findIndex((e) => e.m === mid) : -1;
+    const tete = el.querySelector('.tete');
+    tete.dataset.chiffre ??= tete.textContent;
+    tete.textContent = k >= 0 ? k + 1 : tete.dataset.chiffre;
+    el.classList.toggle('etape', k >= 0);
+  }
+  const src = map.getSource('promenade');
+  if (!promenade) { src?.setData(ligne([])); if (!panneau.hidden) listePromenades(); return; }
+  detailPromenade(promenade);
+  contenu.scrollTop = 0;
+  arreterTour();
+  if (!fiche.hidden) fermer();
+
+  // cadrage sur le parcours, en laissant la place au panneau
+  const t = promenade.trace;
+  const bb = t.reduce((b, [x, y]) => [[Math.min(b[0][0], x), Math.min(b[0][1], y)], [Math.max(b[1][0], x), Math.max(b[1][1], y)]], [[180, 90], [-180, -90]]);
+  const mobile = innerWidth <= 640;
+  const padding = mobile ? { top: 76, bottom: panneau.offsetHeight + 16, left: 24, right: 24 } : { top: 70, bottom: 70, left: 420, right: 80 };
+  // orientation habituelle, sauf si une autre montre nettement mieux un parcours tout en longueur
+  const zoomPour = (bearing) => map.cameraForBounds(bb, { padding, bearing, pitch: 45 })?.zoom ?? 0;
+  let bearing = VUE.bearing, zoom = zoomPour(bearing);
+  for (const b of [0, -60]) { const z = zoomPour(b); if (z > zoom + 0.35) { bearing = b; zoom = z; } }
+  // centre du parcours + marges passées à la caméra (cameraForBounds décale mal le centre quand la vue est tournée)
+  const centre = [(bb[0][0] + bb[1][0]) / 2, (bb[0][1] + bb[1][1]) / 2];
+  map.flyTo({ center: centre, zoom, bearing, pitch: 45, padding, duration: 1500, essential: true });
+
+  // le tracé se dessine progressivement, de l'hôtel vers la dernière étape
+  const t0 = performance.now() + 900, dureeDessin = 1800;
+  const pas = (now) => {
+    const f = Math.min(1, Math.max(0, (now - t0) / dureeDessin));
+    const e = 1 - (1 - f) ** 2;
+    src.setData(ligne(t.slice(0, Math.max(2, Math.ceil(e * t.length)))));
+    if (f < 1) dessin = requestAnimationFrame(pas);
+  };
+  dessin = requestAnimationFrame(pas);
+}
+
+contenu.addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.pr) choisirPromenade(b.dataset.pr);
+  else if (b.dataset.retour !== undefined) choisirPromenade(null);
+  else if (b.dataset.m) ouvrir(b.dataset.m);
+});
+$('btn-promenades').addEventListener('click', () => (panneau.hidden ? ouvrirPromenades() : fermerPromenades()));
+$('promenades-fermer').addEventListener('click', fermerPromenades);
+if (!promenades.length) $('btn-promenades').hidden = true;
+
+// dans la fiche : temps de marche depuis l'hôtel et promenades qui passent par ce monument
+function lienMarche(id) {
+  const d = marches.depuisHotel[id];
+  const sur = promenades.filter((p) => p.etapes.some((e) => e.m === id));
+  $('fiche-liens').innerHTML =
+    (d ? `<span class="fl-temps">À <b>${duree(d.min)}</b> à pied de l'hôtel · ${km(d.m)}</span>` : '') +
+    sur.map((p) => `<button class="fl-promenade" data-pr="${p.id}">Promenade « ${echap(p.nom)} » →</button>`).join('');
+}
+$('fiche-liens').addEventListener('click', (e) => {
+  const b = e.target.closest('button[data-pr]'); if (!b) return;
+  ouvrirPromenades();
+  choisirPromenade(b.dataset.pr);
 });
 
 function intro() {
