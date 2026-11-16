@@ -21,6 +21,9 @@ const FR = {
   'legende.aide': "Touchez une époque pour l'isoler.",
   'legende.protege': 'Autre bâtiment protégé',
   'langue.titre': 'Changer de langue',
+  'cartes.titre': "Nos autres cartes",
+  'cartes.alacarte': "Bars et restaurants",
+  'cartes.canele': "Musées, familles et shopping, en 8 bits",
   'btn.promenades': "Promenades à pied depuis l'hôtel",
   'liste.titre': 'Les monuments',
   'liste.aria': 'Liste des monuments',
@@ -88,6 +91,9 @@ const CODES = LANGS.map((l) => l.code);
 const charges = { fr: { ui: FR } };
 
 let lang = (() => {
+  // langue transmise par une autre de nos cartes (lien « ?lang=en ») : prioritaire
+  const param = new URLSearchParams(location.search).get('lang');
+  if (CODES.includes(param)) return param;
   try { const s = localStorage.getItem(CLE); if (CODES.includes(s)) return s; } catch { /* stockage indisponible */ }
   // langue du téléphone ou de l'ordinateur, sinon anglais
   for (const l of navigator.languages || [navigator.language || 'fr']) {
@@ -104,7 +110,7 @@ export const getLocale = () => LANGS.find((l) => l.code === lang).locale;
 export async function setLang(l) {
   if (!CODES.includes(l)) l = 'fr';
   if (!charges[l]) {
-    try { charges[l] = (await import(`./lang/${l}.js?v=32`)).default; } catch { l = 'fr'; }
+    try { charges[l] = (await import(`./lang/${l}.js?v=33`)).default; } catch { l = 'fr'; }
   }
   lang = l;
   try { localStorage.setItem(CLE, l); } catch { /* stockage indisponible */ }

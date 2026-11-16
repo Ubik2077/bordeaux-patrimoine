@@ -2,7 +2,7 @@
 /* global maplibregl */
 // ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
 import { deplier, polygonesAutour } from './compact.js?v=32';
-import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=32';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=33';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -692,6 +692,19 @@ menuLangue.addEventListener('click', async (e) => {
   await setLang(b.dataset.lang);
   traduirePage();
 });
+// ---------- nos autres cartes (la langue choisie suit : lien « ?lang=xx ») ----------
+const btnCartes = $('btn-cartes'), menuCartes = $('menu-cartes');
+function menuCartesOuvert(ouvert = menuCartes.hidden) {
+  if (ouvert) {
+    menuOuvert(false);
+    for (const a of menuCartes.querySelectorAll('[data-carte]')) { const u = new URL(a.href); u.searchParams.set('lang', getLang()); a.href = u.href; }
+  }
+  menuCartes.hidden = !ouvert;
+  btnCartes.setAttribute('aria-expanded', String(ouvert));
+}
+btnCartes.addEventListener('click', (e) => { e.stopPropagation(); menuCartesOuvert(); });
+document.addEventListener('click', (e) => { if (!menuCartes.hidden && !e.target.closest('.autres-cartes')) menuCartesOuvert(false); });
+
 // réécrit tout ce qui est affiché, sans bouger la carte ni la photo en cours
 function traduirePage() {
   applyStatic();

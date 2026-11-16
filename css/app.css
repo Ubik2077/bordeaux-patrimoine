@@ -66,6 +66,14 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .outils .menu-langue button:hover { background: rgba(80, 50, 20, .07); }
 .outils .menu-langue button[aria-checked="true"] { background: var(--brun); color: var(--parchemin); }
+/* nos autres cartes : même menu que les langues, avec des liens */
+.outils #btn-cartes svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linejoin: round; }
+.menu-cartes { min-width: 230px; }
+.menu-cartes p { margin: 4px 10px 4px; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--encre-douce); }
+.menu-cartes a { display: flex; flex-direction: column; gap: 1px; padding: 7px 10px; border-radius: 7px; color: var(--brun); text-decoration: none; }
+.menu-cartes a b { font-size: 14px; }
+.menu-cartes a span { font-size: 12.5px; color: var(--encre-douce); }
+.menu-cartes a:hover, .menu-cartes a:focus-visible { background: rgba(80, 50, 20, .07); }
 
 /* bouton d'accès aux promenades, dans le cartouche */
 .btn-promenades {
