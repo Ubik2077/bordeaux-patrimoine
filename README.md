@@ -25,7 +25,13 @@ puis ouvrir <http://localhost:8643>.
 | `data/sol.json` | Garonne et rues : IGN BD TOPO. Parcs et places : OpenStreetMap |
 | `data/arbres.json` | Arbres : OpenStreetMap |
 | `data/monuments.json` | Fiches et aperçus rédigés à la main (`scripts/monuments.mjs`) |
-| `data/photos.json`, `img/monuments/` | Photos anciennes et actuelles : Wikimedia Commons, choisies dans `scripts/photos.py`. Auteur, licence et lien source sont affichés sous chaque photo |
+| `data/photos.json`, `img/monuments/` | Photos anciennes et actuelles (WebP) : Wikimedia Commons, choisies dans `scripts/photos.py`. Auteur, licence et lien source sont affichés sous chaque photo |
+
+Bâtiments, sol et arbres sont écrits dans un format compact (`scripts/compact.mjs`, décodé par `js/compact.js`) :
+coordonnées entières codées par écart, même précision que le GeoJSON mais environ 4 fois plus léger.
+La page charge environ 2,7 Mo (850 Ko une fois compressés par le serveur) ; les photos ne sont
+téléchargées qu'à l'ouverture d'une fiche. Après avoir régénéré `data/`, augmenter `DONNEES` dans `js/app.js`
+pour que les navigateurs ne gardent pas l'ancienne version en cache.
 
 Pour régénérer :
 

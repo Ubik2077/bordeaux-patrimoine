@@ -1,5 +1,6 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
+import { deplier, polygonesAutour } from './compact.js';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -8,7 +9,11 @@ const COUL = {
 };
 const VUE = { center: [-0.5705, 44.8435], zoom: 13.2, pitch: 52, bearing: -28 };
 
-const json = (u) => fetch(u).then((r) => r.json());
+const DONNEES = 13; // à changer quand les fichiers de data/ sont régénérés (évite l'ancienne version en cache)
+const json = (u) => fetch(`${u}?v=${DONNEES}`).then((r) => r.json());
+// les gros fichiers partent tout de suite, pendant que la carte s'initialise
+const volumes = Promise.all([json('data/sol.json'), json('data/batiments.json'), json('data/arbres.json')])
+  .then(([sol, bati, arbres]) => ({ sol: deplier(sol), bati: deplier(bati), arbres: polygonesAutour(arbres, 3.3, 6) }));
 const [zone, meta, photos] = await Promise.all([
   json('data/zone.json'), json('data/monuments.json'), json('data/photos.json').catch(() => ({})),
 ]);
@@ -51,13 +56,14 @@ function couleurBati(actives) {
   return ['case', ['has', 'm'], cas, ['has', 'r'], COUL.protege, COUL.bati];
 }
 
-map.on('load', () => {
+map.on('load', async () => {
   map.setLight({ anchor: 'viewport', color: '#ffffff', intensity: 0.42, position: [1.4, 200, 38] });
 
   map.addSource('zone', { type: 'geojson', data: zone });
-  map.addSource('sol', { type: 'geojson', data: 'data/sol.json' });
-  map.addSource('bati', { type: 'geojson', data: 'data/batiments.json' });
-  map.addSource('arbres', { type: 'geojson', data: 'data/arbres.json' });
+  const { sol, bati, arbres } = await volumes;
+  map.addSource('sol', { type: 'geojson', data: sol });
+  map.addSource('bati', { type: 'geojson', data: bati });
+  map.addSource('arbres', { type: 'geojson', data: arbres });
 
   // l'île : deux décalages plus sombres sous le sol donnent l'épaisseur d'une maquette
   map.addLayer({ id: 'socle2', type: 'fill', source: 'zone', paint: { 'fill-color': COUL.socle2, 'fill-translate': [0, 13], 'fill-translate-anchor': 'viewport', 'fill-antialias': true } });
@@ -175,7 +181,7 @@ function legende() {
       const on = actives.has(btn.dataset.k);
       btn.classList.toggle('eteint', !on); btn.setAttribute('aria-pressed', on);
     }
-    map.setPaintProperty('bati', 'fill-extrusion-color', couleurBati(actives));
+    if (map.getLayer('bati')) map.setPaintProperty('bati', 'fill-extrusion-color', couleurBati(actives));
     for (const [id, el] of reperes) el.classList.toggle('estompe', !actives.has(parId[id].epoque));
   });
 }

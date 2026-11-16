@@ -5,6 +5,7 @@
 //   data/sol.json        → Garonne, parcs, places, rues (découpés sur l'île)
 //   data/arbres.json     → arbres (houppiers en volume)
 //   data/monuments.json  → fiches des monuments phares + époques + hôtel
+// Bâtiments, sol et arbres sont écrits au format compact de scripts/compact.mjs (≈ 4× plus léger).
 
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -12,6 +13,7 @@ import { fileURLToPath } from 'node:url';
 import pc from 'polygon-clipping';
 import os from 'node:os';
 import { MONUMENTS, EPOQUES } from './monuments.mjs';
+import { compacter, compacterPoints } from './compact.mjs';
 
 const RAW = path.join(os.tmpdir(), 'bordeaux-patrimoine-raw'); // même dossier que fetch.mjs
 
@@ -313,14 +315,14 @@ for (const f of (await raw('ign-route')).features) {
     sol.push({ type: 'Feature', properties: { t: 'rue', w }, geometry: { type: 'LineString', coordinates: part.map(([x, y]) => [r5(x), r5(y)]) } });
 }
 
-// ---------- 4. arbres : petit houppier hexagonal surélevé (effet « sucette » de maquette) ----------
-const arbres = { type: 'FeatureCollection', features: trees.map((p) => ({ type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: around(p, 3.3, 6, 0) } })) };
+// ---------- 4. arbres : seulement leur position ; le houppier hexagonal est dessiné par js/compact.js ----------
+const arbres = compacterPoints(trees, 1e6);
 
 // ---------- écriture ----------
 const write = async (f, obj) => { const s = JSON.stringify(obj); await writeFile(OUT(f), s); console.log(`✓ ${f.padEnd(16)} ${(s.length / 1e6).toFixed(2)} Mo`); };
 await write('zone.json', { type: 'Feature', properties: {}, geometry: { type: 'Polygon', coordinates: [ZONE] } });
-await write('batiments.json', bati);
-await write('sol.json', { type: 'FeatureCollection', features: sol });
+await write('batiments.json', compacter(bati.features, ['h', 'b', 'm', 'e', 'r', 's'], 1e6));
+await write('sol.json', compacter(sol, ['t', 'w'], 1e5));
 await write('arbres.json', arbres);
 await write('monuments.json', {
   epoques: EPOQUES,

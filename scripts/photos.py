@@ -169,7 +169,7 @@ def main():
             ii = page['imageinfo'][0]
             md = ii['extmetadata']
             nom = f'{mid}-{n}'
-            grand, petit = os.path.join(IMG, nom + '.jpg'), os.path.join(IMG, nom + '-mini.jpg')
+            grand, petit = os.path.join(IMG, nom + '.webp'), os.path.join(IMG, nom + '-mini.webp')
             if not os.path.exists(grand):
                 im = None
                 # la miniature d'abord ; si Commons refuse de la générer, le fichier original
@@ -183,13 +183,13 @@ def main():
                     continue
                 im = im.convert('RGB')
                 im.thumbnail((1400, 1400))
-                im.save(grand, quality=80, optimize=True, progressive=True)
+                im.save(grand, 'WEBP', quality=78, method=6)  # 1400 px : assez pour la visionneuse plein écran
                 im.thumbnail((360, 360))
-                im.save(petit, quality=74, optimize=True)
+                im.save(petit, 'WEBP', quality=72, method=6)  # vignettes et aperçu au survol
             auteur = nettoyer_auteur(texte(md.get('Artist', {}).get('value')))
             out[mid].append({
-                'src': f'img/monuments/{nom}.jpg',
-                'mini': f'img/monuments/{nom}-mini.jpg',
+                'src': f'img/monuments/{nom}.webp',
+                'mini': f'img/monuments/{nom}-mini.webp',
                 'periode': periode,
                 'legende': legende,
                 'auteur': auteur[:120],
