@@ -1,8 +1,8 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
 // ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
-import { deplier, polygonesAutour } from './compact.js?v=28';
-import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=28';
+import { deplier, polygonesAutour } from './compact.js?v=29';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=29';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -385,6 +385,63 @@ addEventListener('keydown', (e) => {
   }
 });
 
+// ---------- « Vous êtes ici » : position du visiteur et monument le plus proche ----------
+const btnGeo = $('btn-geo'), proche = $('proche'), message = $('message');
+let suivi = null, pointIci = null, dejaCentre = false, minuterieMessage = null;
+function afficherMessage(texte) {
+  message.textContent = texte; message.hidden = false;
+  clearTimeout(minuterieMessage); minuterieMessage = setTimeout(() => { message.hidden = true; }, 5000);
+}
+// distance à vol d'oiseau en mètres, puis détour moyen des rues (×1,3) pour estimer la marche
+const MX = 111320 * Math.cos((44.84 * Math.PI) / 180), MY = 110540;
+const distance = ([x1, y1], [x2, y2]) => Math.hypot((x1 - x2) * MX, (y1 - y2) * MY);
+const dansZone = ([x, y]) => x > ZONE_BB[0][0] - 0.01 && x < ZONE_BB[1][0] + 0.01 && y > ZONE_BB[0][1] - 0.01 && y < ZONE_BB[1][1] + 0.01;
+let positionIci = null;
+function majProche() {
+  if (!positionIci) return;
+  let meilleur = null;
+  for (const m of monuments) {
+    if (m.hidePin) continue;
+    const d = distance(positionIci, [m.at[1], m.at[0]]);
+    if (!meilleur || d < meilleur.d) meilleur = { m, d };
+  }
+  const marche = meilleur.d * 1.3, minutes = Math.max(1, Math.round(marche / (marches.vitesse || 70)));
+  proche.innerHTML = `<span class="pt" style="background:${epoques[meilleur.m.epoque].color}"></span>` +
+    `<div><p class="kicker">${t('geo.proche')}</p><p class="proche-nom">${echap(nom(meilleur.m.id))}</p>` +
+    `<p class="proche-temps">${t('geo.temps', { duree: duree(minutes), m: marche < 1000 ? Math.round(marche / 10) * 10 + ' m' : km(marche) })}</p></div>` +
+    `<button data-m="${meilleur.m.id}">${t('geo.ouvrir')} →</button>`;
+  proche.hidden = false;
+}
+function localiser(actif) {
+  btnGeo.setAttribute('aria-pressed', String(actif));
+  if (!actif) {
+    if (suivi != null) navigator.geolocation.clearWatch(suivi);
+    suivi = null; positionIci = null; dejaCentre = false;
+    pointIci?.remove(); pointIci = null; proche.hidden = true;
+    return;
+  }
+  if (!navigator.geolocation) { afficherMessage(t('geo.indispo')); return localiser(false); }
+  suivi = navigator.geolocation.watchPosition((pos) => {
+    const p = [pos.coords.longitude, pos.coords.latitude];
+    if (!dansZone(p)) { afficherMessage(t('geo.loin')); return localiser(false); }
+    positionIci = p;
+    if (!pointIci) {
+      const el = document.createElement('div');
+      el.className = 'ici';
+      el.innerHTML = '<span class="halo"></span><span class="point"></span>';
+      el.title = t('geo.ici');
+      pointIci = new maplibregl.Marker({ element: el }).setLngLat(p).addTo(map);
+    } else pointIci.setLngLat(p);
+    if (!dejaCentre) { dejaCentre = true; arreterTour(); map.flyTo({ center: p, zoom: Math.max(map.getZoom(), 16), duration: 1500, essential: true }); }
+    majProche();
+  }, (err) => {
+    afficherMessage(t(err.code === 1 ? 'geo.refus' : 'geo.indispo'));
+    localiser(false);
+  }, { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 });
+}
+btnGeo.addEventListener('click', () => localiser(btnGeo.getAttribute('aria-pressed') !== 'true'));
+proche.addEventListener('click', (e) => { const b = e.target.closest('button[data-m]'); if (b) ouvrir(b.dataset.m); });
+
 // ---------- outils ----------
 let tour = null;
 function arreterTour() { if (tour) { cancelAnimationFrame(tour); tour = null; document.getElementById('btn-tour').setAttribute('aria-pressed', 'false'); } }
@@ -643,6 +700,8 @@ function traduirePage() {
   if (!panneau.hidden) { if (promenade) detailPromenade(promenade); else listePromenades(); }
   dessinerListe();
   basculerListe(listeOuverte, false);
+  majProche();
+  if (pointIci) pointIci.getElement().title = t('geo.ici');
 }
 
 function intro() {

@@ -358,3 +358,30 @@ body.fiche-ouverte .outils { right: 456px; }
 
 /* ?capture : la carte seule, pour l'image de l'affiche */
 body.capture .card, body.capture .outils, body.capture .credits, body.capture .maplibregl-ctrl { display: none !important; }
+
+/* ---------- « Vous êtes ici » ---------- */
+.outils #btn-geo svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.ici { position: relative; width: 18px; height: 18px; }
+.ici .point { position: absolute; inset: 0; border-radius: 50%; background: #2f6fd6; border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+.ici .halo { position: absolute; inset: -14px; border-radius: 50%; background: rgba(47, 111, 214, .22); animation: pulse 2s ease-out infinite; }
+@keyframes pulse { from { transform: scale(.5); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+.proche {
+  left: 50%; bottom: 30px; transform: translateX(-50%); width: min(360px, calc(100% - 20px));
+  display: flex; align-items: center; gap: 11px; padding: 10px 12px 10px 14px; animation: apparait .2s ease-out;
+}
+.proche .pt { flex: none; width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 0 2px #fff8ec; }
+.proche > div { flex: 1; min-width: 0; }
+.proche .kicker { font-size: 9.5px; }
+.proche-nom { margin: 1px 0 0; font-family: var(--serif); font-size: 18px; font-weight: 700; line-height: 1.1; }
+.proche-temps { margin: 2px 0 0; font-size: 11.5px; color: var(--brun-doux); }
+.proche button { flex: none; padding: 7px 11px; border: 0; border-radius: 999px; background: var(--bordeaux); color: #fff; font-size: 12px; font-weight: 600; }
+.message {
+  position: absolute; z-index: 6; top: 18px; left: 50%; transform: translateX(-50%); max-width: min(440px, calc(100% - 20px));
+  margin: 0; padding: 10px 16px; border-radius: 12px; background: var(--brun); color: var(--parchemin);
+  font-size: 13px; line-height: 1.45; text-align: center; box-shadow: var(--ombre); animation: apparait .2s ease-out;
+}
+@media (max-width: 640px) {
+  .proche { left: 10px; right: 70px; bottom: 86px; width: auto; transform: none; }
+  body.fiche-ouverte .proche, body.promenades-ouvertes .proche { display: none; }
+  .message { top: auto; bottom: 140px; }
+}

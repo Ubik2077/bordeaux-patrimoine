@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="vendor/maplibre-gl.css">
-  <link rel="stylesheet" href="css/app.css?v=25">
+  <link rel="stylesheet" href="css/app.css?v=29">
 </head>
 <body>
   <div id="map" data-i18n-aria="carte.aria" aria-label="Carte 3D du centre historique de Bordeaux"></div>
@@ -83,14 +83,18 @@
       <button id="btn-langue" data-i18n-title="langue.titre" title="Changer de langue" aria-haspopup="true" aria-expanded="false">FR</button>
       <div class="menu-langue" id="menu-langue" role="menu" hidden></div>
     </div>
+    <button id="btn-geo" data-i18n-title="geo.bouton" title="Me localiser" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3"/></svg></button>
     <button id="btn-tour" data-i18n-title="outils.tour" title="Faire tourner la vue" aria-pressed="false">⟳</button>
     <button id="btn-3d" data-i18n-title="outils.3d" title="Basculer vue 2D / 3D">2D</button>
     <button id="btn-accueil" data-i18n-title="outils.accueil" title="Revenir à la vue d'ensemble">⌂</button>
   </div>
 
+  <div class="card proche" id="proche" hidden aria-live="polite"></div>
+  <p class="message" id="message" hidden role="status"></p>
+
   <p class="credits" data-i18n="credits">Bâtiments © IGN BD TOPO · Monuments et arbres © contributeurs OpenStreetMap · Prototype</p>
 
   <script src="vendor/maplibre-gl.js"></script>
-  <script type="module" src="js/app.js?v=28"></script>
+  <script type="module" src="js/app.js?v=29"></script>
 </body>
 </html>
