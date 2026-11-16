@@ -64,6 +64,7 @@ const FR = {
   'geo.loin': "Vous êtes hors du centre de Bordeaux : la carte ne vous suit pas.",
   'geo.refus': "Localisation refusée. Vous pouvez l’autoriser dans les réglages du navigateur.",
   'geo.indispo': "Localisation indisponible pour le moment.",
+  'horsligne': "Hors ligne : la carte reste disponible ; les photos jamais ouvertes ne s'afficheront pas.",
   'pr.aria': "Promenades à pied depuis l'hôtel",
   'pr.fermer': 'Fermer les promenades',
   'pr.kicker': 'Depuis votre hôtel',
@@ -103,7 +104,7 @@ export const getLocale = () => LANGS.find((l) => l.code === lang).locale;
 export async function setLang(l) {
   if (!CODES.includes(l)) l = 'fr';
   if (!charges[l]) {
-    try { charges[l] = (await import(`./lang/${l}.js?v=30`)).default; } catch { l = 'fr'; }
+    try { charges[l] = (await import(`./lang/${l}.js?v=32`)).default; } catch { l = 'fr'; }
   }
   lang = l;
   try { localStorage.setItem(CLE, l); } catch { /* stockage indisponible */ }

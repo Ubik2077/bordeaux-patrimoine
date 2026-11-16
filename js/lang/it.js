@@ -50,6 +50,7 @@ export default {
     'geo.loin': "Siete fuori dal centro di Bordeaux: la mappa non vi segue.",
     'geo.refus': "Posizione negata. Potete autorizzarla nelle impostazioni del browser.",
     'geo.indispo': "Posizione non disponibile per ora.",
+    'horsligne': "Offline: la mappa resta disponibile; le foto mai aperte non verranno mostrate.",
     'pr.aria': "Passeggiate a piedi dall'hotel",
     'pr.fermer': 'Chiudi le passeggiate',
     'pr.kicker': 'Dal vostro hotel',

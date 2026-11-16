@@ -50,6 +50,7 @@ export default {
     'geo.loin': "Sie sind außerhalb der Innenstadt von Bordeaux: Die Karte folgt Ihnen nicht.",
     'geo.refus': "Standortzugriff verweigert. Sie können ihn in den Browsereinstellungen erlauben.",
     'geo.indispo': "Standort derzeit nicht verfügbar.",
+    'horsligne': "Offline: Die Karte bleibt verfügbar; noch nie geöffnete Fotos werden nicht angezeigt.",
     'pr.aria': 'Spaziergänge ab dem Hotel',
     'pr.fermer': 'Spaziergänge schließen',
     'pr.kicker': 'Ab Ihrem Hotel',

@@ -50,6 +50,7 @@ export default {
     'geo.loin': "You are outside central Bordeaux: the map will not follow you.",
     'geo.refus': "Location denied. You can allow it in your browser settings.",
     'geo.indispo': "Location unavailable for now.",
+    'horsligne': "Offline: the map is still available; photos you have never opened will not show.",
     'pr.aria': 'Walks from the hotel',
     'pr.fermer': 'Close the walks',
     'pr.kicker': 'From your hotel',

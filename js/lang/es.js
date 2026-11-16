@@ -50,6 +50,7 @@ export default {
     'geo.loin': "Está fuera del centro de Burdeos: el mapa no le sigue.",
     'geo.refus': "Ubicación denegada. Puede autorizarla en los ajustes del navegador.",
     'geo.indispo': "Ubicación no disponible por ahora.",
+    'horsligne': "Sin conexión: el mapa sigue disponible; las fotos que nunca ha abierto no se mostrarán.",
     'pr.aria': 'Paseos a pie desde el hotel',
     'pr.fermer': 'Cerrar los paseos',
     'pr.kicker': 'Desde su hotel',

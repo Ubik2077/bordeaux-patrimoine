@@ -1,8 +1,8 @@
 // Port de la Lune — prototype de carte 3D des monuments historiques de Bordeaux.
 /* global maplibregl */
 // ?v= : à augmenter avec celui de index.html, pour que les navigateurs ne gardent pas d'ancienne version
-import { deplier, polygonesAutour } from './compact.js?v=30';
-import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=30';
+import { deplier, polygonesAutour } from './compact.js?v=32';
+import { LANGS, t, getLang, setLang, applyStatic, tEpoque, tMonument, tPhoto, tPromenade, fmtKm as km, fmtDuree as duree } from './i18n.js?v=32';
 
 const COUL = {
   sol: '#e2dfd7', socle: '#cfc6b5', socle2: '#b9ae99',
@@ -368,6 +368,13 @@ function agrandir() {
   $('visionneuse-fermer').focus();
 }
 $('agrandir').addEventListener('click', agrandir);
+// hors ligne, une grande photo jamais ouverte manque : on montre sa miniature (gardée en cache)
+for (const el of [$('photo-a'), $('photo-b'), $('visionneuse-img')]) {
+  el.addEventListener('error', () => {
+    const ph = galerie.find((p) => el.src.endsWith(p.src));
+    if (ph) el.src = ph.mini;
+  });
+}
 $('photo-a').addEventListener('click', agrandir);
 $('photo-b').addEventListener('click', agrandir);
 $('visionneuse-fermer').addEventListener('click', () => { visionneuse.hidden = true; });
@@ -703,6 +710,11 @@ function traduirePage() {
   majProche();
   if (pointIci) pointIci.getElement().title = t('geo.ici');
 }
+
+// ---------- hors ligne : service worker (sw.js) et message quand le réseau manque ----------
+if ('serviceWorker' in navigator && !CAPTURE) navigator.serviceWorker.register('sw.js').catch(() => {});
+addEventListener('offline', () => afficherMessage(t('horsligne')));
+if (!navigator.onLine) afficherMessage(t('horsligne'));
 
 function intro() {
   const v = vueAccueil();

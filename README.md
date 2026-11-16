@@ -9,7 +9,7 @@ Suite de « Bordeaux à la carte » (bars et restaurants).
 (photos « Autrefois / Aujourd'hui », visionneuse plein écran), les autres bâtiments protégés en beige
 (lien vers leur notice officielle Mérimée), et trois promenades à pied depuis l'hôtel tracées sur les rues.
 En cinq langues (français, anglais, espagnol, italien, allemand ; menu 🌐, langue du téléphone détectée).
-Pas encore de mode hors ligne.
+Fonctionne hors ligne et s'installe comme une application (voir plus bas).
 
 ## 🌍 En ligne
 
@@ -19,6 +19,17 @@ Hébergée gratuitement par GitHub Pages, depuis le dépôt <https://github.com/
 Chaque `git push` sur `main` met le site à jour en une à deux minutes. Après une modification des fichiers
 `js/` ou `css/`, augmenter le numéro `?v=` dans `index.html` (et dans les `import` de `js/app.js` et `js/i18n.js`)
 pour que les visiteurs ne gardent pas l'ancienne version en cache.
+
+## 📴 Hors ligne et installation
+
+`sw.js` garde la carte, les données et les miniatures des photos dès la première visite ; les grandes photos
+sont gardées quand on les ouvre (hors ligne, une photo jamais ouverte est remplacée par sa miniature).
+En ligne, les fichiers sont toujours repris du serveur : une mise à jour publiée est visible au chargement suivant.
+`manifest.webmanifest` et `img/icone-*.png` permettent d'« ajouter à l'écran d'accueil » sur téléphone.
+Si un fichier est ajouté au site, l'ajouter aussi à la liste `COEUR` de `sw.js`.
+
+Le bouton ◎ de la barre d'outils affiche « Vous êtes ici » et le monument le plus proche (le navigateur demande
+l'autorisation ; fonctionne uniquement dans le centre de Bordeaux).
 
 ## 🖨️ Affiche pour la réception
 
