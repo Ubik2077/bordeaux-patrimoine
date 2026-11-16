@@ -11,6 +11,15 @@ Suite de « Bordeaux à la carte » (bars et restaurants).
 En cinq langues (français, anglais, espagnol, italien, allemand ; menu 🌐, langue du téléphone détectée).
 Pas encore de mode hors ligne.
 
+## 🌍 En ligne
+
+👉 **<https://ubik2077.github.io/bordeaux-patrimoine/>**
+
+Hébergée gratuitement par GitHub Pages, depuis le dépôt <https://github.com/Ubik2077/bordeaux-patrimoine>.
+Chaque `git push` sur `main` met le site à jour en une à deux minutes. Après une modification des fichiers
+`js/` ou `css/`, augmenter le numéro `?v=` dans `index.html` (et dans les `import` de `js/app.js` et `js/i18n.js`)
+pour que les visiteurs ne gardent pas l'ancienne version en cache.
+
 ## Lancer
 
 ```bash
