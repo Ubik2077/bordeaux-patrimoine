@@ -33,7 +33,7 @@ l'autorisation ; fonctionne uniquement dans le centre de Bordeaux).
 
 ## 🖨️ Affiche pour la réception
 
-[affiche-clients.pdf](affiche-clients.pdf) : affiche A5 avec le QR code du site, en français et en anglais
+[affiche-port-de-la-lune.pdf](affiche-port-de-la-lune.pdf) : affiche A5 avec le QR code du site, en français et en anglais
 (les autres langues sont annoncées). À imprimer en A5, sans marges, sans mise à l'échelle.
 Elle est aussi en ligne : <https://ubik2077.github.io/bordeaux-patrimoine/affiche.html> (bouton « Imprimer »).
 

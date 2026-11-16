@@ -1,5 +1,5 @@
 #!/bin/sh
-# Regénère affiche-clients.pdf (A5) à partir de affiche.html, avec Chrome ou Brave sans fenêtre.
+# Regénère affiche-port-de-la-lune.pdf (A5) à partir de affiche.html, avec Chrome ou Brave sans fenêtre.
 # Le site doit tourner en local : python3 -m http.server 8643 --bind 127.0.0.1
 #
 # L'image de la carte (img/affiche/carte.jpg) est une capture de la carte 3D faite dans un navigateur :
@@ -16,6 +16,6 @@ done
 TEMP_PROFIL="$(mktemp -d)"
 PROFIL="${PROFIL:-$TEMP_PROFIL}"  # profil de navigateur jetable
 "$NAV" --headless --no-first-run --disable-extensions --use-mock-keychain --password-store=basic --user-data-dir="$PROFIL" --no-pdf-header-footer \
-  --virtual-time-budget=8000 --print-to-pdf="$PWD/affiche-clients.pdf" "http://127.0.0.1:8643/affiche.html" 2>/dev/null
+  --virtual-time-budget=8000 --print-to-pdf="$PWD/affiche-port-de-la-lune.pdf" "http://127.0.0.1:8643/affiche.html" 2>/dev/null
 rm -rf "$TEMP_PROFIL"
-echo "✓ affiche-clients.pdf"
+echo "✓ affiche-port-de-la-lune.pdf"
