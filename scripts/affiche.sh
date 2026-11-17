@@ -2,6 +2,7 @@
 # Regénère les affiches PDF avec Chrome ou Brave sans fenêtre :
 #   affiche-port-de-la-lune.pdf     (A5, affiche.html)
 #   affiche-port-de-la-lune-a3.pdf  (A3, affiche-a3.html : la ville entière et le résumé des 22 monuments)
+#   affiche-port-de-la-lune-a2.pdf  (A2 murale, affiche-a3.html?a2 : la même, agrandie)
 # Le site doit tourner en local : python3 -m http.server 8643 --bind 127.0.0.1
 #
 # Les images des cartes sont des captures de la carte 3D faites dans un navigateur :
@@ -18,7 +19,7 @@ done
 [ -n "$NAV" ] || { echo "Chrome ou Brave introuvable"; exit 1; }
 TEMP_PROFIL="$(mktemp -d)"
 PROFIL="${PROFIL:-$TEMP_PROFIL}"  # profil de navigateur jetable
-for paire in "affiche.html affiche-port-de-la-lune.pdf" "affiche-a3.html affiche-port-de-la-lune-a3.pdf"; do
+for paire in "affiche.html affiche-port-de-la-lune.pdf" "affiche-a3.html affiche-port-de-la-lune-a3.pdf" "affiche-a3.html?a2 affiche-port-de-la-lune-a2.pdf"; do
   set -- $paire
   "$NAV" --headless --no-first-run --disable-extensions --use-mock-keychain --password-store=basic --user-data-dir="$PROFIL" --no-pdf-header-footer \
     --virtual-time-budget=8000 --print-to-pdf="$PWD/$2" "http://127.0.0.1:8643/$1" 2>/dev/null

@@ -4,20 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Port de la Lune — affiche A3</title>
-  <!-- Affiche A3 pour l'accueil : la ville entière, les 22 monuments numérotés et leur résumé, le QR code du site.
-       Imprimer depuis le navigateur (format A3, marges : aucune), ou régénérer affiche-port-de-la-lune-a3.pdf
-       avec scripts/affiche.sh. Carte : img/affiche/carte-a3.jpg ; positions des monuments sur cette image :
+  <!-- Grande affiche pour l'accueil : la ville entière, les 22 monuments numérotés et leur résumé, le QR code du site.
+       Textes en français, chacun suivi de l'anglais (sauf les résumés : les anglophones les trouvent dans l'application).
+       A3 par défaut ; affiche-a3.html?a2 donne la version murale A2 (la même page agrandie √2 fois).
+       Imprimer depuis le navigateur (format A3 ou A2, marges : aucune), ou régénérer les PDF avec scripts/affiche.sh. Carte : img/affiche/carte-a3.jpg ; positions des monuments sur cette image :
        img/affiche/carte-a3.json (voir scripts/affiche.sh pour refaire la capture). -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style id="page">@page { size: A3; margin: 0; }</style><!-- A2 : « size: A2 » n'existe pas en CSS, d'où 420mm 594mm dans le script -->
   <style>
     :root {
       --parchemin: #f3e8d4; --filet: #c9b088;
       --brun: #3b2a1d; --brun-doux: #6e5a45; --bordeaux: #7a2340;
       --serif: 'Cormorant Garamond', Georgia, serif; --sans: Inter, -apple-system, sans-serif;
     }
-    @page { size: A3; margin: 0; }
     * { box-sizing: border-box; }
     html, body { margin: 0; }
     body { background: #8d8273; font-family: var(--sans); color: var(--brun); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -34,29 +35,37 @@
     .affiche::after { inset: 7.6mm; border-width: .25mm; border-color: var(--filet); }
 
     /* ---------- carte ---------- */
-    .carte { position: relative; width: 100%; aspect-ratio: 1200 / 918; flex: none; }
+    .carte { position: relative; width: 96%; margin: 0 auto; aspect-ratio: 1200 / 918; flex: none; }
     .carte img, .carte svg.calque { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
-    .titre { position: absolute; left: 1mm; top: -1mm; }
+    .titre { position: absolute; left: -4.5mm; top: -1mm; }
     .kicker { margin: 0; font-size: 8pt; letter-spacing: .17em; text-transform: uppercase; font-weight: 600; color: var(--bordeaux); }
     h1 { margin: 1mm 0 0; font-family: var(--serif); font-weight: 600; font-size: 50pt; line-height: .9; letter-spacing: -.01em; white-space: nowrap; }
     .sous { margin: 2.5mm 0 0; max-width: 72mm; font-family: var(--serif); font-size: 14pt; font-weight: 600; line-height: 1.12; }
-    .intro { margin: 2mm 0 0; max-width: 60mm; font-family: var(--serif); font-style: italic; font-size: 11pt; line-height: 1.2; color: var(--brun-doux); }
+    .sous .en { display: block; margin-top: .8mm; font-size: 12.5pt; font-style: italic; font-weight: 500; color: var(--brun-doux); }
+    .intro { margin: 2.2mm 0 0; max-width: 45mm; font-family: var(--serif); font-style: italic; font-size: 11pt; line-height: 1.18; color: var(--brun-doux); }
+    .intro.en { margin-top: 1.2mm; }
+    .vers-app { margin: 2.6mm 0 0; max-width: 37mm; font-size: 7.6pt; font-weight: 600; line-height: 1.3; color: var(--bordeaux); }
+    em.en, .en { font-style: italic; }
+    .kicker .en { font-style: normal; color: var(--brun-doux); }
 
-    .legende { position: absolute; left: 1mm; bottom: 3mm; display: grid; gap: 1.6mm; font-size: 8.4pt; font-weight: 500; }
+    .legende { position: absolute; left: -4.5mm; bottom: 2mm; display: grid; gap: 1.6mm; font-size: 8.4pt; font-weight: 500; }
     .legende span { display: flex; align-items: center; gap: 2mm; }
     .legende i { flex: none; width: 4mm; height: 4mm; border-radius: 50%; border: .45mm solid #fff; box-shadow: 0 .3mm .6mm rgba(0,0,0,.25); }
     .legende i.h { border-radius: 1mm; background: #22252b; }
     .legende i.pr { width: 6mm; height: 0; border: 0; border-top: .7mm dotted var(--bordeaux); border-radius: 0; box-shadow: none; }
     .legende .titre-leg { font-family: var(--serif); font-size: 11pt; font-weight: 700; margin-bottom: .4mm; }
+    .legende em { color: var(--brun-doux); font-weight: 400; }
+    .legende .titre-leg em { font-weight: 500; }
 
-    .nord { position: absolute; right: 2mm; top: 34mm; width: 11mm; text-align: center; font: 700 9pt var(--serif); color: var(--brun); }
+    .nord { position: absolute; right: -3mm; top: 34mm; width: 11mm; text-align: center; font: 700 9pt var(--serif); color: var(--brun); }
     .nord svg { display: block; width: 11mm; height: 11mm; }
 
     /* ---------- résumés ---------- */
     .bas { flex: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 6mm; margin-top: 4mm; padding-top: 4mm; border-top: .3mm solid var(--filet); min-height: 0; }
     .col { display: flex; flex-direction: column; gap: 2.6mm; min-height: 0; }
     .epoque { display: flex; align-items: center; gap: 2mm; margin: 0 0 -.6mm; font-size: 7.6pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+    .epoque em { font-weight: 500; letter-spacing: .04em; text-transform: none; font-size: 8pt; opacity: .85; }
     .epoque::after { content: ''; flex: 1; height: .3mm; background: currentColor; opacity: .35; }
     .epoque + .epoque, .monu + .epoque { margin-top: 1.6mm; }
     .monu { display: grid; grid-template-columns: 6.2mm 1fr; gap: 0 2mm; }
@@ -67,15 +76,18 @@
 
     .qr-bloc { margin-top: auto; padding: 3mm 3mm 2.6mm; background: #fffaf0; border: .5mm solid var(--brun); border-radius: 3mm; text-align: center; }
     .qr-bloc .appel { margin: 0; font-family: var(--serif); font-size: 14pt; font-weight: 700; line-height: 1.02; }
-    .qr { width: 37mm; height: 37mm; margin: 2.4mm auto 0; }
+    .qr-bloc .appel-en { margin: 1mm 0 0; font-family: var(--serif); font-size: 12pt; font-style: italic; font-weight: 600; line-height: 1.05; color: var(--brun-doux); }
+    .qr { width: 35mm; height: 35mm; margin: 2.2mm auto 0; }
     .qr svg { display: block; width: 100%; height: 100%; }
-    .qr-bloc .plus { margin: 2mm 0 0; font-size: 7.2pt; line-height: 1.35; color: var(--brun-doux); }
+    .qr-bloc .plus { margin: 1.8mm 0 0; font-size: 7.2pt; line-height: 1.3; color: var(--brun-doux); }
     .qr-bloc .url { margin: 1mm 0 0; font-size: 7pt; font-weight: 600; color: var(--bordeaux); word-break: break-all; }
 
     .pied { flex: none; display: flex; justify-content: space-between; gap: 6mm; margin-top: 3mm; font-size: 6.4pt; color: var(--brun-doux); }
 
     .boutons { display: flex; justify-content: center; gap: 10px; margin: 0 0 14px; }
     .boutons button { padding: 9px 18px; border: 0; border-radius: 999px; background: var(--bordeaux); color: #fff; font: 600 14px var(--sans); cursor: pointer; }
+    /* version murale A2 (?a2) : la même affiche, agrandie √2 fois */
+    html.a2 .affiche { zoom: 1.41421; }
     @media print {
       body { background: none; }
       .affiche { margin: 0; box-shadow: none; }
@@ -90,10 +102,12 @@
       <svg class="calque" id="calque" viewBox="0 0 1200 918" aria-hidden="true"></svg>
 
       <div class="titre">
-        <p class="kicker">Bordeaux · Patrimoine mondial de l'UNESCO</p>
+        <p class="kicker">Bordeaux · Patrimoine mondial de l'UNESCO · <span class="en">UNESCO World Heritage</span></p>
         <h1>Port de la Lune</h1>
-        <p class="sous">Les monuments historiques de Bordeaux, en relief</p>
+        <p class="sous">Les monuments historiques de Bordeaux, en relief<span class="en">Bordeaux’s historic monuments in 3D</span></p>
         <p class="intro">Deux mille ans d’histoire, de l’amphithéâtre romain à la Cité du Vin.</p>
+        <p class="intro en">Two thousand years of history, from the Roman amphitheatre to the Cité du Vin.</p>
+        <p class="vers-app">English descriptions of every monument in the app: scan the QR code, bottom right.</p>
       </div>
 
       <div class="nord"><svg viewBox="0 0 24 24"><path d="M12 2 17 20 12 16.5 7 20z" fill="#3b2a1d"/><path d="M12 2 12 16.5 7 20z" fill="#74604b"/></svg>N</div>
@@ -105,14 +119,24 @@
 
     <footer class="pied">
       <span id="hotel"></span>
-      <span>Fond de carte : IGN BD TOPO et OpenStreetMap · Textes : fiches de l’application Port de la Lune</span>
+      <span>Fond de carte · <em>Map data</em> : IGN BD TOPO, OpenStreetMap · Textes · <em>Texts</em> : application Port de la Lune</span>
     </footer>
   </main>
-  <div class="boutons"><button onclick="print()">Imprimer l’affiche (A3)</button></div>
+  <div class="boutons"><button onclick="print()" id="imprimer">Imprimer l’affiche (A3)</button></div>
 
   <script src="vendor/qrcode.js"></script>
   <script>
     const URL_SITE = 'https://ubik2077.github.io/bordeaux-patrimoine/';
+
+    // ?a2 : version murale (format de page A2, affiche agrandie par le CSS)
+    if (new URLSearchParams(location.search).has('a2')) {
+      document.documentElement.classList.add('a2');
+      document.getElementById('page').textContent = '@page { size: 420mm 594mm; margin: 0; }';
+      document.title = 'Port de la Lune — affiche A2';
+      document.getElementById('imprimer').textContent = 'Imprimer l’affiche (A2)';
+    }
+    // traduction anglaise des époques (la même que dans l'application, js/lang/en.js)
+    const EPOQUES_EN = { antique: 'Antiquity', medieval: 'Middle Ages', lumieres: '18th century', xix: '19th century', contemporain: '20th–21st century' };
 
     // ordre chronologique (numéros de la carte) et résumé de chaque monument, tirés des fiches
     const RESUMES = [
@@ -191,9 +215,10 @@
       // légende des époques
       const compte = {};
       for (const [id] of RESUMES) compte[parId[id].epoque] = (compte[parId[id].epoque] || 0) + 1;
-      document.getElementById('legende').innerHTML = '<span class="titre-leg">Légende</span>' +
-        Object.entries(ep).map(([k, e]) => `<span><i style="background:${e.color}"></i>${e.label}</span>`).join('') +
-        '<span><i class="h"></i>Votre hôtel</span><span><i class="pr"></i>Les 3 promenades à pied de l’application</span>';
+      document.getElementById('legende').innerHTML = '<span class="titre-leg">Légende · <em>Key</em></span>' +
+        Object.entries(ep).map(([k, e]) => `<span><i style="background:${e.color}"></i>${e.label} · <em>${EPOQUES_EN[k]}</em></span>`).join('') +
+        '<span><i class="h"></i>Votre hôtel · <em>Your hotel</em></span>' +
+        '<span><i class="pr"></i>Les 3 promenades à pied de l’application · <em>The app’s 3 walking tours</em></span>';
 
       // résumés en quatre colonnes, avec un intertitre à chaque changement d'époque
       const bas = document.getElementById('bas');
@@ -202,12 +227,12 @@
         let html = '', courante = null;
         RESUMES.slice(debut, fin).forEach(([id, resume], j) => {
           const m = parId[id], e = ep[m.epoque];
-          if (m.epoque !== courante) { courante = m.epoque; html += `<p class="epoque" style="color:${e.color}">${e.label}</p>`; }
+          if (m.epoque !== courante) { courante = m.epoque; html += `<p class="epoque" style="color:${e.color}">${e.label} <em>${EPOQUES_EN[m.epoque]}</em></p>`; }
           html += `<article class="monu"><span class="num" style="background:${e.color}">${debut + j + 1}</span>` +
             `<h3>${echap(m.name)}<span class="dates">${echap(m.dates)}</span></h3><p>${insecables(echap(resume))}</p></article>`;
         });
-        if (c === COLONNES.length - 1) html += '<div class="qr-bloc"><p class="appel">Emportez la carte<br>sur votre téléphone</p><div class="qr" id="qr"></div>' +
-          '<p class="plus">Gratuit, sans installation · 5 langues</p><p class="url" id="url"></p></div>';
+        if (c === COLONNES.length - 1) html += '<div class="qr-bloc"><p class="appel">Emportez la carte<br>sur votre téléphone</p><p class="appel-en">Take the map on your phone</p><div class="qr" id="qr"></div>' +
+          '<p class="plus">Gratuit, sans installation · 5 langues<br><em>Free, nothing to install · in English</em></p><p class="url" id="url"></p></div>';
         bas.insertAdjacentHTML('beforeend', `<div class="col">${html}</div>`);
         debut = fin;
       });

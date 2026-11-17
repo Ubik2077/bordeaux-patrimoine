@@ -37,12 +37,14 @@ l'autorisation ; fonctionne uniquement dans le centre de Bordeaux).
 (les autres langues sont annoncées). À imprimer en A5, sans marges, sans mise à l'échelle.
 Elle est aussi en ligne : <https://ubik2077.github.io/bordeaux-patrimoine/affiche.html> (bouton « Imprimer »).
 
-[affiche-port-de-la-lune-a3.pdf](affiche-port-de-la-lune-a3.pdf) : grande affiche A3 pour l'accueil, en français :
-la ville entière en relief avec les 22 monuments numérotés, leur résumé par époque, les promenades et le QR code.
-À imprimer en A3, sans marges, sans mise à l'échelle. En ligne : <https://ubik2077.github.io/bordeaux-patrimoine/affiche-a3.html>.
+[affiche-port-de-la-lune-a3.pdf](affiche-port-de-la-lune-a3.pdf) (A3, pour le comptoir) et
+[affiche-port-de-la-lune-a2.pdf](affiche-port-de-la-lune-a2.pdf) (A2, pour le mur) : la ville entière en relief avec
+les 22 monuments numérotés, leur résumé par époque, les promenades et le QR code. Textes en français suivis de l'anglais,
+sauf les résumés (les anglophones sont invités à les lire dans l'application). À imprimer sans marges, sans mise à l'échelle.
+En ligne : <https://ubik2077.github.io/bordeaux-patrimoine/affiche-a3.html> (A3) et `affiche-a3.html?a2` (A2).
 
 Pour les modifier : éditer `affiche.html` ou `affiche-a3.html` (les résumés de l'A3 sont en haut de son script),
-puis `sh scripts/affiche.sh` (site lancé en local) regénère les deux PDF.
+puis `sh scripts/affiche.sh` (site lancé en local) regénère les PDF.
 Les images des cartes sont des captures de la carte 3D (`?capture`, voir le script ; pour l'A3, `scripts/capture-a3.js`).
 
 ## Lancer
