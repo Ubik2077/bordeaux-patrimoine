@@ -12,7 +12,7 @@ export default {
     'langue.titre': 'Change language',
     'cartes.titre': "Our other maps",
     'cartes.alacarte': "Bars and restaurants",
-    'cartes.canele': "Museums, families and shopping, in 8-bit",
+    'cartes.miniature': "Museums, families and shopping, as a miniature model",
     'btn.promenades': 'Walks from the hotel',
     'liste.titre': 'Monuments',
     'liste.aria': 'List of monuments',

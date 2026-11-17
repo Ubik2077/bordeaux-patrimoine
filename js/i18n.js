@@ -23,7 +23,7 @@ const FR = {
   'langue.titre': 'Changer de langue',
   'cartes.titre': "Nos autres cartes",
   'cartes.alacarte': "Bars et restaurants",
-  'cartes.canele': "Musées, familles et shopping, en 8 bits",
+  'cartes.miniature': "Musées, familles et shopping, en maquette",
   'btn.promenades': "Promenades à pied depuis l'hôtel",
   'liste.titre': 'Les monuments',
   'liste.aria': 'Liste des monuments',

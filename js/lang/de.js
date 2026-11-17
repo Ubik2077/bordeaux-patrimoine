@@ -12,7 +12,7 @@ export default {
     'langue.titre': 'Sprache ändern',
     'cartes.titre': "Unsere anderen Karten",
     'cartes.alacarte': "Bars und Restaurants",
-    'cartes.canele': "Museen, Familien und Shopping, in 8 Bit",
+    'cartes.miniature': "Museen, Familien und Shopping, als Miniaturmodell",
     'btn.promenades': 'Spaziergänge ab dem Hotel',
     'liste.titre': 'Die Denkmäler',
     'liste.aria': 'Liste der Denkmäler',
